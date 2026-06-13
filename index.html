@@ -1,0 +1,979 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Idiomas - Organização de Idiomas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link class="js-apple-touch-icon" rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3176/3176294.png">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        /* Scrollbar Personalizada e Retro para PC */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+            border: 2px solid #090d16;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00ff55;
+            box-shadow: 0 0 8px #00ff55;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(180deg, #090d16 0%, #111026 100%);
+            background-attachment: fixed; 
+            color: #f8fafc;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* --- DESIGN ADAPTATIVO PARA SMARTPHONE E PC --- */
+        @media (min-width: 768px) {
+            body {
+                justify-content: center; /* Centraliza verticalmente no PC */
+                padding: 40px 16px;
+            }
+            .app-container {
+                border: 3px solid #00ff55;
+                border-radius: 28px;
+                padding: 28px;
+                background: #0d1220;
+                box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 255, 85, 0.15);
+                position: relative;
+            }
+            /* Detalhe de luz LED de consola retro no topo do dispositivo em PCs */
+            .app-container::before {
+                content: '';
+                position: absolute;
+                top: -3px; left: 15%; right: 15%;
+                height: 3px;
+                background: #00ff55;
+                box-shadow: 0 0 15px #00ff55, 0 0 30px #00ff55;
+                border-radius: 10px;
+            }
+        }
+
+        .app-header { 
+            text-align: center; 
+            margin-top: 15px; 
+            margin-bottom: 5px; 
+        }
+        .app-header h1 { 
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.65rem; 
+            color: #00ff55; 
+            text-shadow: 0 0 15px rgba(0, 255, 85, 0.7), 0 0 5px rgba(0, 255, 85, 0.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            line-height: 1.4;
+        }
+        .subtitle { color: #94a3b8; font-size: 0.95rem; margin-top: 10px; font-family: monospace; }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active { transform: scale(0.96); opacity: 0.9; }
+        .primary { background-color: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); }
+        .primary:hover { background-color: #2563eb; }
+        .secondary { background-color: #1e293b; color: #f1f5f9; border: 1.5px solid #334155; }
+        .secondary:hover { background-color: #334155; }
+        .success { background-color: #10b981; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+        .success:hover { background-color: #059669; }
+        .danger { background-color: #ef4444; color: white; }
+        
+        .action-btn-kryptonite {
+            background: #121b2d;
+            color: #00ff55;
+            border: 2.5px solid #00ff55;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 8px rgba(0, 255, 85, 0.2);
+            text-shadow: 0 0 4px rgba(0, 255, 85, 0.4);
+            font-weight: 800;
+            font-family: monospace;
+            font-size: 1.05rem;
+        }
+        .action-btn-kryptonite:hover {
+            border-color: #a3ff00;
+            color: #a3ff00;
+            box-shadow: 0 4px 15px rgba(163, 255, 0, 0.35);
+            text-shadow: 0 0 6px rgba(163, 255, 0, 0.6);
+        }
+        
+        .audio-btn { 
+            background: #334155; color: white; border: none; padding: 12px; border-radius: 14px; cursor: pointer; font-size: 1.3rem;
+            display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.1s;
+        }
+        .audio-btn:active { transform: scale(0.9); background: #475569; }
+
+        .notebook-list { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+
+        .notebook-card {
+            background: #131a26; border-radius: 18px; padding: 18px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 4px rgba(0, 255, 85, 0.05);
+            border: 2px solid #334155; cursor: pointer; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .notebook-card:hover { border-color: #00ff55; box-shadow: 0 4px 15px rgba(0, 255, 85, 0.15); }
+        
+        .card-content { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .notebook-card h3 { color: #f1f5f9; font-size: 1.15rem; font-weight: 700; text-align: left; }
+        .notebook-card p { color: #94a3b8; font-size: 0.85rem; margin-top: 3px; text-align: left; }
+
+        .game-progress-container { margin-top: 12px; width: 100%; }
+        .game-progress-info { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 800; color: #94a3b8; margin-bottom: 3px; }
+        .game-progress-bar {
+            width: 100%; background-color: #020617; border-radius: 8px; height: 16px; padding: 2px;
+            border: 2px solid #334155; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+        }
+        .game-progress-fill {
+            background: linear-gradient(90deg, #00ff55 0%, #a3ff00 100%); height: 100%; border-radius: 6px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(57, 255, 20, 0.6);
+        }
+
+        .action-icon-btn {
+            background: none; border: none; color: #94a3b8; font-size: 1.1rem; cursor: pointer; padding: 8px; border-radius: 8px;
+            transition: color 0.2s, background 0.2s, transform 0.1s;
+        }
+        .action-icon-btn:hover { color: #f1f5f9; background: rgba(255, 255, 255, 0.05); }
+        .action-icon-btn:active { transform: scale(0.9); }
+        .delete-btn { color: #ef4444; }
+        .delete-btn:hover { color: #f87171; background: rgba(239, 68, 68, 0.1); }
+
+        .hidden { display: none !important; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(9, 13, 22, 0.9); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 16px;
+        }
+
+        .modal-content {
+            background: #111827; border: 3px solid #00ff55; color: #f1f5f9; padding: 24px; border-radius: 24px;
+            width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(0, 255, 85, 0.15);
+            text-align: center; animation: modalFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalFade { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        #modalInputs input, #modalInputs textarea, #modalInputs select {
+            width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #334155; background: #070a13;
+            color: white; border-radius: 14px; outline: none; font-family: inherit; font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        #modalInputs input:focus, #modalInputs textarea:focus, #modalInputs select:focus { border-color: #00ff55; box-shadow: 0 0 10px rgba(0, 255, 85, 0.3); }
+
+        .word-list { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+
+        .word-card {
+            background: #131a26; padding: 16px; border-radius: 16px; border: 1.5px solid #334155;
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+            transition: border-color 0.2s;
+        }
+        .word-card.mastered {
+            border-color: rgba(0, 255, 85, 0.3);
+            background: linear-gradient(135deg, #131a26 0%, #0d241d 100%);
+        }
+
+        .practice-container {
+            background: #111827; padding: 24px; border-radius: 24px; text-align: center; border: 3px solid #00ff55;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 15px rgba(0, 255, 85, 0.1); width: 100%; display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* Reduzido o tamanho da fonte e altura mínima da área de feedback */
+        #practiceFeedback {
+            font-size: 1.8rem;
+            margin: 10px 0;
+            min-height: 2.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0 0 10px rgba(0, 255, 85, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            font-family: monospace;
+            font-size: 0.9rem;
+            border: 2px dashed #334155;
+            border-radius: 18px;
+            background: rgba(30, 41, 59, 0.1);
+        }
+        
+        .mastered-badge {
+            background: rgba(0, 255, 85, 0.1);
+            color: #00ff55;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 85, 0.3);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- HEADER -->
+        <header class="app-header">
+            <h1>Meus Idiomas</h1>
+            <p class="subtitle">Aprenda &amp; Pratique de forma divertida</p>
+        </header>
+
+        <!-- DASHBOARD VIEW -->
+        <main id="mainContainer">
+            <div class="actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; width: 100%;">
+                <button id="newNotebookBtn" class="btn action-btn-kryptonite" style="width: 100%;">+ Novo Caderno</button>
+                <button id="mainPracticeBtn" class="btn action-btn-kryptonite" style="width: 100%;">🎯 Praticar</button>
+            </div>
+            <div class="notebook-list" id="notebookList"></div>
+        </main>
+
+        <!-- CADERNO EM DETALHES -->
+        <section id="notebookDetail" class="hidden">
+            <header class="detail-header" style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                <button id="backBtn" class="btn secondary" style="padding: 10px 16px; font-size: 0.9rem;">← Voltar</button>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div id="detailTitle" style="font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 8px; max-width: 220px; color:#f1f5f9;"></div>
+                    <button id="resetProgressBtn" class="action-icon-btn" style="color: #94a3b8; font-size: 1.15rem; padding: 4px;" title="Zerar Progresso">🔄</button>
+                </div>
+            </header>
+            
+            <div class="detail-actions" style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button id="addWordBtn" class="btn primary">+ Nova Palavra</button>
+                <button id="detailPracticeBtn" class="btn success">Praticar</button>
+            </div>
+            
+            <div id="wordList" class="word-list"></div>
+        </section>
+
+        <!-- ÁREA DE TREINO / PRÁTICA -->
+        <section id="practiceSection" class="hidden">
+            <div class="practice-container">
+                <div class="practice-word-wrapper" style="display:flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
+                    <h2 id="practiceNative" style="font-size: 1.8rem; color: #3b82f6;"></h2>
+                    <button id="practiceAudioBtn" class="audio-btn" title="Ouvir pronúncia">🔊</button>
+                </div>
+                
+                <div class="practice-input-group" style="display: flex; gap: 8px; width: 100%; margin-bottom: 12px; flex-direction: column;">
+                    <input type="text" id="practiceInput" placeholder="Sua tradução..." autocomplete="off" style="width: 100%; padding: 16px; border-radius: 16px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 1.1rem; text-align: center;">
+                </div>
+
+                <p id="practiceNotes" style="color: #94a3b8; margin-bottom: 12px; font-style: italic;"></p>
+                <p id="practiceFeedback"></p>
+                <p id="practiceAttempts" style="color: #f87171; font-weight: bold;"></p>
+                
+                <button id="practiceQuitBtn" class="btn secondary" style="margin-top: 20px; width: 100%;">Sair do Treino</button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MODAL INTEGRADO -->
+    <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="modalTitle" style="margin-bottom: 15px; font-size: 1.3rem;"></h3>
+            <div id="modalInputs"></div>
+            <div id="modalFooter" style="display: flex; justify-content: center; gap: 12px; margin-top: 20px;">
+                <button id="modalCancelBtn" class="btn secondary" style="flex: 1; padding: 12px;">Cancelar</button>
+                <button id="modalConfirmBtn" class="btn primary" style="flex: 1; padding: 12px;">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let notebooks = JSON.parse(localStorage.getItem('meus-cadernos')) || [
+                {
+                    title: "Inglês Básico",
+                    lang: "en-US",
+                    words: [
+                        { native: "Hello", translation: "Olá", mastered: false },
+                        { native: "Water", translation: "Água", mastered: false },
+                        { native: "Thank you", translation: "Obrigado", mastered: false }
+                    ]
+                }
+            ];
+            let currentIndex = null;
+            let pIndex = 0;
+            let attemptsLeft = 5; 
+            let correctAnswers = 0; 
+            let activePracticeWords = [];
+            let practiceSource = 'detail';
+            let isTransitioning = false; 
+
+            // --- WEB AUDIO API (SYNTHESIZER) ---
+            let audioCtx = null;
+
+            function initAudio() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            function playCoinSound() {
+                initAudio();
+                if (!audioCtx) return;
+                
+                const now = audioCtx.currentTime;
+                
+                const osc1 = audioCtx.createOscillator();
+                const gain1 = audioCtx.createGain();
+                osc1.type = 'square';
+                osc1.frequency.setValueAtTime(987.77, now);
+                gain1.gain.setValueAtTime(0.06, now); 
+                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                osc1.connect(gain1);
+                gain1.connect(audioCtx.destination);
+                osc1.start(now);
+                osc1.stop(now + 0.08);
+
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.type = 'square';
+                osc2.frequency.setValueAtTime(1318.51, now + 0.08);
+                gain2.gain.setValueAtTime(0, now + 0.08);
+                gain2.gain.linearRampToValueAtTime(0.06, now + 0.09);
+                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.start(now + 0.08);
+                osc2.stop(now + 0.35);
+            }
+
+            function playErrorSound() {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(140, now);
+                osc.frequency.linearRampToValueAtTime(80, now + 0.25);
+                
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+
+            function playGameOverSound() {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(120, now);
+                osc.frequency.linearRampToValueAtTime(40, now + 0.6);
+
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+
+            function playLevelUpSound() {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + (idx * 0.08));
+                    
+                    gain.gain.setValueAtTime(0.06, now + (idx * 0.08));
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.08) + 0.25);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start(now + (idx * 0.08));
+                    osc.stop(now + (idx * 0.08) + 0.25);
+                });
+            }
+
+            function getFlagImgUrl(langCode) {
+                if (!langCode) return 'https://flagcdn.com/w80/un.png';
+                const specialCodes = { 'la': 'va', 'eo': 'un', 'custom': 'un' };
+                let code = langCode.toLowerCase().trim();
+                if (specialCodes[code]) return `https://flagcdn.com/w80/${specialCodes[code]}.png`;
+                if (code.includes('-')) return `https://flagcdn.com/w80/${code.split('-')[1]}.png`;
+                const fallbacks = { 'en': 'gb', 'es': 'es', 'ja': 'jp', 'fr': 'fr', 'de': 'de', 'it': 'it', 'ko': 'kr', 'zh': 'cn', 'ru': 'ru', 'pt': 'pt', 'ar': 'sa', 'hi': 'in', 'tr': 'tr', 'nl': 'nl', 'pl': 'pl', 'sv': 'se', 'no': 'no', 'da': 'dk', 'fi': 'fi', 'el': 'gr', 'he': 'il', 'th': 'th', 'vi': 'vn', 'id': 'id', 'cs': 'cz', 'hu': 'hu', 'ro': 'ro', 'uk': 'ua' };
+                return fallbacks[code] ? `https://flagcdn.com/w80/${fallbacks[code]}.png` : 'https://flagcdn.com/w80/un.png';
+            }
+
+            const mainView = document.getElementById('mainContainer');
+            const detailView = document.getElementById('notebookDetail');
+            const practiceView = document.getElementById('practiceSection');
+            const listEl = document.getElementById('notebookList');
+            const modal = document.getElementById('modalOverlay');
+            const practiceInput = document.getElementById('practiceInput');
+
+            const languageOptionsHTML = `
+                <option value="en-US">Inglês 🇬🇧</option>
+                <option value="es-ES">Espanhol 🇪🇸</option>
+                <option value="ja-JP">Japonês 🇯🇵</option>
+                <option value="fr-FR">Francês 🇫🇷</option>
+                <option value="de-DE">Alemão 🇩🇪</option>
+                <option value="it-IT">Italiano 🇮🇹</option>
+                <option value="ko-KR">Coreano 🇰🇷</option>
+                <option value="zh-CN">Chinês 🇨🇳</option>
+                <option value="pt-PT">Português 🇵🇹</option>
+                <option value="ru-RU">Russo 🇷🇺</option>
+                <option value="ar-SA">Árabe 🇸🇦</option>
+                <option value="hi-IN">Hindi 🇮🇳</option>
+                <option value="tr-TR">Turco 🇹🇷</option>
+                <option value="nl-NL">Holandês 🇳🇱</option>
+                <option value="pl-PL">Polonês 🇵🇱</option>
+                <option value="sv-SE">Sueco 🇸🇪</option>
+                <option value="no-NO">Norueguês 🇳🇴</option>
+                <option value="da-DK">Dinamarquês 🇩🇰</option>
+                <option value="fi-FI">Finlandês 🇫🇮</option>
+                <option value="el-GR">Grego 🇬🇷</option>
+                <option value="he-IL">Hebraico 🇮🇱</option>
+                <option value="th-TH">Tailandês 🇹🇭</option>
+                <option value="vi-VN">Vietnamita 🇻🇳</option>
+                <option value="id-ID">Indonésio 🇮🇩</option>
+                <option value="cs-CZ">Tcheco 🇨🇿</option>
+                <option value="hu-HU">Húngaro 🇭🇺</option>
+                <option value="ro-RO">Romeno 🇷🇴</option>
+                <option value="uk-UA">Ucraniano 🇺🇦</option>
+                <option value="la">Latim 🇻🇦</option>
+                <option value="eo">Esperanto 🟢</option>
+            `;
+
+            // FUNÇÃO SPEAK ATUALIZADA COM SUPORTE PERFEITO PARA WEBVIEW/APK DO WEBSITE2APK!
+            function speak(text, langCode) {
+                const correctLang = langCode || 'en-US';
+                
+                // Detecta se está sendo executado no WebView do Android (como no APK do Website2APK)
+                const isWebView = /wv|Android.*Version\/[0-9.]+/i.test(navigator.userAgent);
+                
+                if ('speechSynthesis' in window && !isWebView) {
+                    // Caminho Padrão: Executa no navegador comum usando a Web Speech API
+                    window.speechSynthesis.cancel();
+                    const u = new SpeechSynthesisUtterance(text);
+                    u.lang = correctLang;
+                    window.speechSynthesis.speak(u);
+                } else {
+                    // Caminho Fallback Mágico: Executa perfeitamente dentro do WebView do APK
+                    try {
+                        const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${correctLang}&client=tw-ob&q=${encodeURIComponent(text)}`;
+                        const audio = new Audio(audioUrl);
+                        audio.play().catch(err => console.log("Erro ao reproduzir áudio do APK:", err));
+                    } catch (e) {
+                        console.error("Não foi possível inicializar áudio alternativo:", e);
+                    }
+                }
+            }
+            window.speak = speak;
+
+            function save() { localStorage.setItem('meus-cadernos', JSON.stringify(notebooks)); }
+
+            function renderNotebooks() {
+                listEl.innerHTML = '';
+                if (notebooks.length === 0) {
+                    listEl.innerHTML = `<div class="empty-state">Nenhum caderno criado. Comece clicando em "+ Novo Caderno"!</div>`;
+                    return;
+                }
+                notebooks.forEach((nb, idx) => {
+                    const total = nb.words.length;
+                    const mastered = nb.words.filter(w => w.mastered).length;
+                    const pct = total > 0 ? Math.round((mastered / total) * 100) : 0;
+                    const card = document.createElement('div');
+                    card.className = 'notebook-card';
+                    card.innerHTML = `
+                        <div class="card-content" onclick="window.openNb(${idx})" style="flex-direction: column; align-items: flex-start; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                                <img src="${getFlagImgUrl(nb.lang)}" style="width: 44px; height: 32px; object-fit: cover; border-radius: 6px; border: 1.5px solid #334155;">
+                                <div style="flex: 1;">
+                                    <h3>${nb.title}</h3>
+                                    <p>${total} palavras</p>
+                                </div>
+                            </div>
+                            <div class="game-progress-container">
+                                <div class="game-progress-info">
+                                    <span>CONCLUÍDO</span>
+                                    <span>${pct}%</span>
+                                </div>
+                                <div class="game-progress-bar">
+                                    <div class="game-progress-fill" style="width: ${pct}%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px; margin-left: 10px;">
+                            <button class="action-icon-btn" onclick="event.stopPropagation(); window.editNotebook(${idx})" title="Editar Caderno">✏️</button>
+                            <button class="action-icon-btn delete-btn" onclick="event.stopPropagation(); window.confirmDeleteNb(${idx})" title="Excluir Caderno">🗑️</button>
+                        </div>
+                    `;
+                    listEl.appendChild(card);
+                });
+            }
+
+            window.openNb = (idx) => {
+                currentIndex = idx;
+                mainView.classList.add('hidden');
+                detailView.classList.remove('hidden');
+                document.getElementById('detailTitle').innerHTML = `<img src="${getFlagImgUrl(notebooks[idx].lang)}" style="width:32px; height: 22px; object-fit: cover; border-radius:4px; border: 1px solid #334155;"> <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;">${notebooks[idx].title}</span>`;
+                renderWords();
+            };
+
+            document.getElementById('backBtn').onclick = () => {
+                detailView.classList.add('hidden');
+                mainView.classList.remove('hidden');
+                currentIndex = null;
+                renderNotebooks();
+            };
+
+            window.editNotebook = (idx) => {
+                const nb = notebooks[idx];
+                document.getElementById('modalTitle').textContent = 'Editar Caderno';
+                document.getElementById('modalInputs').innerHTML = `
+                    <input type="text" id="edit_nb_title" value="${nb.title}" placeholder="Nome do Caderno">
+                    <select id="edit_nb_lang">
+                        ${languageOptionsHTML}
+                    </select>
+                `;
+                document.getElementById('edit_nb_lang').value = nb.lang || 'en-US';
+
+                document.getElementById('modalConfirmBtn').onclick = () => {
+                    const t = document.getElementById('edit_nb_title').value.trim();
+                    const l = document.getElementById('edit_nb_lang').value || 'en-US';
+                    if (t) {
+                        notebooks[idx].title = t;
+                        notebooks[idx].lang = l;
+                        modal.classList.add('hidden');
+                        save();
+                        renderNotebooks();
+                    }
+                };
+                modal.classList.remove('hidden');
+            };
+
+            window.confirmDeleteNb = (idx) => {
+                document.getElementById('modalTitle').textContent = 'Excluir Caderno?';
+                document.getElementById('modalInputs').innerHTML = `<p style="line-height: 1.5;">Tem certeza de que deseja excluir o caderno "<strong>${notebooks[idx].title}</strong>" e todas as suas palavras? Esta ação não pode ser desfeita.</p>`;
+                document.getElementById('modalConfirmBtn').onclick = () => {
+                    notebooks.splice(idx, 1);
+                    modal.classList.add('hidden');
+                    save();
+                    renderNotebooks();
+                };
+                modal.classList.remove('hidden');
+            };
+
+            function renderWords() {
+                const list = document.getElementById('wordList');
+                list.innerHTML = '';
+                const currentNb = notebooks[currentIndex];
+                
+                if (currentNb.words.length === 0) {
+                    list.innerHTML = `<div class="empty-state">Este caderno está vazio.<br>Clique em "+ Nova Palavra" para começar!</div>`;
+                    return;
+                }
+
+                currentNb.words.forEach((w, wIdx) => {
+                    const div = document.createElement('div');
+                    div.className = 'word-card' + (w.mastered ? ' mastered' : '');
+                    div.innerHTML = `
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                            <div>
+                                <div style="font-weight:700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; text-align: left;">
+                                    ${w.native} 
+                                    ${w.mastered ? '<span class="mastered-badge">★ Aprendido</span>' : ''}
+                                </div>
+                                <div style="color:#3b82f6; font-size: 0.95rem; margin-top: 2px; text-align: left;">${w.translation}</div>
+                            </div>
+                            <div style="font-size: 1.2rem; cursor: pointer;" onclick="window.speak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" title="Ouvir">🔊</div>
+                        </div>
+                        <div style="display: flex; gap: 4px;">
+                            <button class="action-icon-btn" onclick="window.editWord(${wIdx})" title="Editar">✏️</button>
+                            <button class="action-icon-btn delete-btn" onclick="window.delWord(${wIdx})" title="Excluir">🗑️</button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            }
+
+            window.delWord = (wIdx) => {
+                notebooks[currentIndex].words.splice(wIdx, 1);
+                renderWords();
+                save();
+            };
+
+            window.editWord = (wIdx) => {
+                const w = notebooks[currentIndex].words[wIdx];
+                document.getElementById('modalTitle').textContent = 'Editar Palavra';
+                document.getElementById('modalInputs').innerHTML = `
+                    <input type="text" id="edit_w_nat" value="${w.native}" placeholder="Palavra/Frase Original">
+                    <input type="text" id="edit_w_trans" value="${w.translation}" placeholder="Tradução">
+                `;
+                document.getElementById('modalConfirmBtn').onclick = () => {
+                    const n = document.getElementById('edit_w_nat').value.trim();
+                    const t = document.getElementById('edit_w_trans').value.trim();
+                    if (n && t) {
+                        notebooks[currentIndex].words[wIdx].native = n;
+                        notebooks[currentIndex].words[wIdx].translation = t;
+                        renderWords();
+                        modal.classList.add('hidden');
+                        save();
+                    }
+                };
+                modal.classList.remove('hidden');
+            };
+
+            document.getElementById('newNotebookBtn').onclick = () => {
+                document.getElementById('modalTitle').textContent = 'Novo Caderno';
+                document.getElementById('modalInputs').innerHTML = `
+                    <input type="text" id="n_title" placeholder="Nome do Caderno (ex: Japonês para Viagem)">
+                    <select id="n_lang">
+                        ${languageOptionsHTML}
+                    </select>
+                `;
+                document.getElementById('modalConfirmBtn').onclick = () => {
+                    const t = document.getElementById('n_title').value.trim();
+                    const l = document.getElementById('n_lang').value || 'en-US';
+                    if (t) {
+                        notebooks.push({ title: t, lang: l, words: [] });
+                        renderNotebooks();
+                        modal.classList.add('hidden');
+                        save();
+                    }
+                };
+                modal.classList.remove('hidden');
+            };
+
+            document.getElementById('addWordBtn').onclick = () => {
+                document.getElementById('modalTitle').textContent = 'Nova Palavra';
+                document.getElementById('modalInputs').innerHTML = `
+                    <input type="text" id="w_nat" placeholder="Ex: Good Morning">
+                    <input type="text" id="w_trans" placeholder="Ex: Bom dia">
+                `;
+                document.getElementById('modalConfirmBtn').onclick = () => {
+                    const n = document.getElementById('w_nat').value.trim();
+                    const t = document.getElementById('w_trans').value.trim();
+                    if (n && t) {
+                        notebooks[currentIndex].words.push({ native: n, translation: t, mastered: false });
+                        renderWords();
+                        modal.classList.add('hidden');
+                        save();
+                    }
+                };
+                modal.classList.remove('hidden');
+            };
+
+            document.getElementById('resetProgressBtn').onclick = () => {
+                document.getElementById('modalTitle').textContent = 'Zerar Progresso?';
+                document.getElementById('modalInputs').innerHTML = `<p style="line-height: 1.5;">Quer redefinir o progresso deste caderno? Todas as palavras voltarão a ser marcadas como não aprendidas.</p>`;
+                document.getElementById('modalConfirmBtn').onclick = () => {
+                    notebooks[currentIndex].words.forEach(w => w.mastered = false);
+                    modal.classList.add('hidden');
+                    save();
+                    renderWords();
+                };
+                modal.classList.remove('hidden');
+            };
+
+            document.getElementById('modalCancelBtn').onclick = () => {
+                modal.classList.add('hidden');
+            };
+
+            function updateHeartsUI() {
+                const attemptsContainer = document.getElementById('practiceAttempts');
+                let hearts = '';
+                const maxHearts = 5; 
+                
+                for (let i = 0; i < maxHearts; i++) {
+                    if (i < attemptsLeft) {
+                        hearts += '❤️ ';
+                    } else {
+                        hearts += '😢 '; 
+                    }
+                }
+                attemptsContainer.innerHTML = `<span style="font-size: 1.4rem; letter-spacing: 2px;">${hearts.trim()}</span>`;
+            }
+
+            document.getElementById('detailPracticeBtn').onclick = () => {
+                if (notebooks[currentIndex].words.length === 0) return;
+                activePracticeWords = [...notebooks[currentIndex].words];
+                activePracticeWords.sort(() => Math.random() - 0.5);
+                pIndex = 0;
+                attemptsLeft = 5; 
+                correctAnswers = 0; 
+                practiceSource = 'detail';
+                detailView.classList.add('hidden');
+                practiceView.classList.remove('hidden');
+                updateHeartsUI();
+                nextStep();
+            };
+
+            document.getElementById('mainPracticeBtn').onclick = () => {
+                let allWords = [];
+                notebooks.forEach(nb => {
+                    nb.words.forEach(w => {
+                        allWords.push({
+                            ...w,
+                            lang: nb.lang
+                        });
+                    });
+                });
+
+                if (allWords.length === 0) return;
+                
+                activePracticeWords = allWords;
+                activePracticeWords.sort(() => Math.random() - 0.5);
+                pIndex = 0;
+                attemptsLeft = 5; 
+                correctAnswers = 0; 
+                practiceSource = 'main';
+                mainView.classList.add('hidden');
+                practiceView.classList.remove('hidden');
+                updateHeartsUI();
+                nextStep();
+            };
+
+            function nextStep() {
+                isTransitioning = false;
+                const w = activePracticeWords[pIndex];
+                document.getElementById('practiceNative').textContent = w.native;
+                practiceInput.value = '';
+                document.getElementById('practiceFeedback').textContent = ''; 
+                practiceInput.disabled = false;
+                practiceInput.focus();
+                
+                let correctLang = (practiceSource === 'main') ? (w.lang || 'en-US') : notebooks[currentIndex].lang;
+                speak(w.native, correctLang);
+            }
+
+            function normalize(str) {
+                return str.normalize("NFD")
+                          .replace(/[\u0300-\u036f]/g, "")
+                          .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?¿¡]/g, "")
+                          .toLowerCase()
+                          .trim();
+            }
+
+            function triggerSuccess() {
+                const feedback = document.getElementById('practiceFeedback');
+                feedback.textContent = '✅';
+                playCoinSound(); 
+                correctAnswers++; 
+                
+                if (practiceSource === 'detail') {
+                    let originalWord = notebooks[currentIndex].words.find(w => w.native === activePracticeWords[pIndex].native && w.translation === activePracticeWords[pIndex].translation);
+                    if (originalWord) {
+                        originalWord.mastered = true;
+                    }
+                } else {
+                    notebooks.forEach(nb => {
+                        let originalWord = nb.words.find(w => w.native === activePracticeWords[pIndex].native && w.translation === activePracticeWords[pIndex].translation);
+                        if (originalWord) {
+                            originalWord.mastered = true;
+                        }
+                    });
+                }
+                save(); 
+
+                if (attemptsLeft < 5) { 
+                    attemptsLeft++;
+                    updateHeartsUI();
+                }
+
+                isTransitioning = true;
+                practiceInput.disabled = true;
+
+                setTimeout(() => {
+                    advance();
+                }, 800);
+            }
+
+            function triggerFailure() {
+                const feedback = document.getElementById('practiceFeedback');
+                const currentTranslation = activePracticeWords[pIndex].translation;
+                
+                playErrorSound(); 
+                attemptsLeft--;
+                updateHeartsUI();
+
+                isTransitioning = true;
+                practiceInput.disabled = true;
+
+                if (attemptsLeft <= 0) {
+                    feedback.innerHTML = `❌ <div style="font-size: 0.95rem; color: #ef4444; margin-top: 4px; font-family: monospace;">Resposta: ${currentTranslation}</div>`;
+                    setTimeout(() => {
+                        feedback.innerHTML = `<span style="font-size: 1.4rem;">😢 GAME OVER 😢</span>`; 
+                        playGameOverSound(); 
+                        
+                        setTimeout(() => {
+                            practiceView.classList.add('hidden');
+                            if (practiceSource === 'detail') {
+                                detailView.classList.remove('hidden');
+                                renderWords();
+                            } else {
+                                mainView.classList.remove('hidden');
+                                renderNotebooks();
+                            }
+                        }, 2000);
+                    }, 1500);
+                } else {
+                    feedback.textContent = '❌';
+                    setTimeout(() => {
+                        feedback.textContent = '';
+                        practiceInput.disabled = false;
+                        practiceInput.value = ''; 
+                        practiceInput.focus();
+                        isTransitioning = false;
+                    }, 800);
+                }
+            }
+
+            practiceInput.addEventListener('input', () => {
+                if (isTransitioning) return;
+                const inputVal = practiceInput.value.trim();
+                const currentTranslation = activePracticeWords[pIndex].translation.trim();
+                
+                const normInput = normalize(inputVal);
+                const normTarget = normalize(currentTranslation);
+                
+                if (normInput === normTarget) {
+                    triggerSuccess();
+                }
+            });
+
+            practiceInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (isTransitioning) return;
+
+                    const inputVal = practiceInput.value.trim();
+                    const currentTranslation = activePracticeWords[pIndex].translation.trim();
+
+                    if (inputVal === "") return;
+
+                    const normInput = normalize(inputVal);
+                    const normTarget = normalize(currentTranslation);
+
+                    if (normInput === normTarget) {
+                        triggerSuccess();
+                    } else {
+                        triggerFailure();
+                    }
+                }
+            });
+
+            document.getElementById('practiceAudioBtn').onclick = () => {
+                const w = activePracticeWords[pIndex];
+                let correctLang = (practiceSource === 'main') ? (w.lang || 'en-US') : notebooks[currentIndex].lang;
+                speak(w.native, correctLang);
+            };
+
+            document.getElementById('practiceQuitBtn').onclick = () => {
+                practiceView.classList.add('hidden');
+                if (practiceSource === 'detail') {
+                    detailView.classList.remove('hidden');
+                    renderWords();
+                } else {
+                    mainView.classList.remove('hidden');
+                    renderNotebooks();
+                }
+            };
+
+            function advance() {
+                pIndex++;
+                if (pIndex >= activePracticeWords.length) {
+                    const feedback = document.getElementById('practiceFeedback');
+                    isTransitioning = true;
+                    
+                    const percent = Math.round((correctAnswers / activePracticeWords.length) * 100);
+                    
+                    if (percent === 100) {
+                        feedback.innerHTML = `🏆 EXCELENTE! 🏆<div style="font-size: 0.95rem; color: #00ff55; margin-top: 4px; font-family: monospace;">Aproveitamento: 100%<br>Você dominou tudo!</div>`;
+                        playLevelUpSound();
+                    } else if (percent >= 50) {
+                        feedback.innerHTML = `👍 BOM TRABALHO! 👍<div style="font-size: 0.95rem; color: #3b82f6; margin-top: 4px; font-family: monospace;">Aproveitamento: ${percent}%<br>Pratique mais para gabaritar!</div>`;
+                        playCoinSound();
+                    } else {
+                        feedback.innerHTML = `📚 TREINO CONCLUÍDO<div style="font-size: 0.95rem; color: #94a3b8; margin-top: 4px; font-family: monospace;">Aproveitamento: ${percent}%<br>Tente novamente para melhorar!</div>`;
+                        playErrorSound();
+                    }
+                    
+                    setTimeout(() => {
+                        practiceView.classList.add('hidden');
+                        if (practiceSource === 'detail') {
+                            detailView.classList.remove('hidden');
+                            renderWords();
+                        } else {
+                            mainView.classList.remove('hidden');
+                            renderNotebooks();
+                        }
+                    }, 3000); 
+                } else {
+                    nextStep();
+                }
+            }
+
+            renderNotebooks();
+        });
+    </script>
+</body>
+</html>
