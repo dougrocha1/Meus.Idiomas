@@ -349,10 +349,21 @@
             let audioCtx = null;
 
             function initAudio() {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-            }
+              if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Linha mágica que acorda o áudio no iPhone:
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+// Desbloqueia o som globalmente no primeiro toque na tela
+document.addEventListener('click', () => {
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}, { once: true });
 
             function playCoinSound() {
                 initAudio();
