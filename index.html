@@ -348,21 +348,26 @@
             // --- WEB AUDIO API (SYNTHESIZER) ---
             let audioCtx = null;
 
-            function initAudio() {
-              if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    // Linha mágica que acorda o áudio no iPhone:
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
+           function initAudio() {
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(e => console.log("Erro ao retomar áudio:", e));
+        }
+    } catch (error) {
+        console.log("AudioContext não suportado ou bloqueado pelo iOS:", error);
     }
 }
 
-// Desbloqueia o som globalmente no primeiro toque na tela
+// Ouvinte global seguro para o primeiro toque
 document.addEventListener('click', () => {
-    if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    try {
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume().catch(() => {});
+        }
+    } catch(e) {}
 }, { once: true });
 
             function playCoinSound() {
