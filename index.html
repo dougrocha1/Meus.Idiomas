@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -886,7 +886,7 @@ document.addEventListener('click', () => {
             function triggerSuccess() {
                 const feedback = document.getElementById('practiceFeedback');
                 feedback.textContent = '';
-                feedback.innerHTML = `<img src="assets/joia.png" alt="Correto" class="feedback-image">`;
+                feedback.innerHTML = `<img src="joia.png" alt="Correto" class="feedback-image">`;
                 playCoinSound(); 
                 correctAnswers++; 
                 
@@ -933,7 +933,7 @@ document.addEventListener('click', () => {
                 if (attemptsLeft <= 0) {
                     feedback.innerHTML = ` <div style="font-size: 3.0rem; color: green; margin-top: 1px; font-family: monospace;"> ${currentTranslation}</div>`;
                     setTimeout(() => {
-                        feedback.innerHTML = `<img src="assets/gameOver.png" alt="Game Over" class="feedback-image large">`;
+                        feedback.innerHTML = `<img src="gameOver.png" alt="Game Over" class="feedback-image large">`;
                         playGameOverSound(); 
                         
                         setTimeout(() => {
@@ -1019,7 +1019,7 @@ document.addEventListener('click', () => {
                     const percent = Math.round((correctAnswers / activePracticeWords.length) * 100);
                     
                     if (percent === 100) {
-                        feedback.innerHTML = `<img src="assets/goodJob.png" alt="Excelente" class="feedback-image xl">`;
+                        feedback.innerHTML = `<img src="goodJob.png" alt="Excelente" class="feedback-image xl">`;
                         playLevelUpSound();
                     } else if (percent >= 50) {
                         feedback.innerHTML = `👍 BOM TRABALHO! 👍<div style="font-size: 3.0rem; color: #3b82f6; margin-top: 4px; font-family: monospace;">Aproveitamento: ${percent}%<br>Pratique mais para gabaritar!</div>`;
