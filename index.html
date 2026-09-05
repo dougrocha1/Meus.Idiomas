@@ -647,12 +647,33 @@ document.addEventListener('click', () => {
             `;
 
             // Reproduz a pronúncia após uma ação do usuário, com fallback para navegadores sem voz disponível.
+            const pronunciationAudioCache = new Map();
+
+            function getFallbackAudio(text, langCode) {
+                const cacheKey = `${langCode}|${text}`;
+                if (pronunciationAudioCache.has(cacheKey)) {
+                    return pronunciationAudioCache.get(cacheKey);
+                }
+
+                const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${langCode}&client=tw-ob&q=${encodeURIComponent(text)}`;
+                const audio = new Audio();
+                audio.preload = 'auto';
+                audio.src = audioUrl;
+                audio.load();
+                pronunciationAudioCache.set(cacheKey, audio);
+                return audio;
+            }
+
+            function preloadSpeak(text, langCode) {
+                getFallbackAudio(text, langCode || 'en-US');
+            }
+
             function speak(text, langCode) {
                 const correctLang = langCode || 'en-US';
 
                 const playFallback = () => {
-                    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${correctLang}&client=tw-ob&q=${encodeURIComponent(text)}`;
-                    const audio = new Audio(audioUrl);
+                    const audio = getFallbackAudio(text, correctLang);
+                    audio.currentTime = 0;
                     audio.play().catch(err => console.log("Erro ao reproduzir áudio alternativo:", err));
                 };
 
@@ -668,6 +689,7 @@ document.addEventListener('click', () => {
                 window.speechSynthesis.speak(utterance);
             }
             window.speak = speak;
+            window.preloadSpeak = preloadSpeak;
 
             function save() { localStorage.setItem('meus-cadernos', JSON.stringify(notebooks)); }
 
@@ -787,7 +809,7 @@ document.addEventListener('click', () => {
                             </div>
                         </div>
                         <div class="word-actions" style="display: flex; align-items: center; gap: 8px;">
-                            <button class="word-audio-btn" onclick="event.preventDefault(); event.stopPropagation(); window.speak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" aria-label="Ouvir palavra" title="Ouvir">🔊</button>
+                            <button class="word-audio-btn" onpointerdown="window.preloadSpeak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" onclick="event.preventDefault(); event.stopPropagation(); window.speak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" aria-label="Ouvir palavra" title="Ouvir">🔊</button>
                             <button class="word-menu-toggle" onclick="event.preventDefault(); event.stopPropagation(); window.toggleWordMenu(${wIdx});" aria-label="Mais opções">⋯</button>
                             <div class="word-menu-panel hidden" data-index="${wIdx}" onclick="event.stopPropagation()">
                                 <button class="action-icon-btn" onclick="event.preventDefault(); event.stopPropagation(); window.editWord(${wIdx})" title="Editar">✏️ Editar</button>
@@ -1088,6 +1110,13 @@ document.addEventListener('click', () => {
                     }
                 }
             });
+
+            document.getElementById('practiceAudioBtn').onpointerdown = () => {
+                const w = activePracticeWords[pIndex];
+                if (!w) return;
+                const correctLang = (practiceSource === 'main') ? (w.lang || 'en-US') : notebooks[currentIndex].lang;
+                preloadSpeak(w.native, correctLang);
+            };
 
             document.getElementById('practiceAudioBtn').onclick = () => {
                 const w = activePracticeWords[pIndex];
