@@ -646,29 +646,26 @@ document.addEventListener('click', () => {
                 <option value="eo">Esperanto 🟢</option>
             `;
 
-            // FUNÇÃO SPEAK ATUALIZADA COM SUPORTE PERFEITO PARA WEBVIEW/APK DO WEBSITE2APK!
+            // Reproduz a pronúncia após uma ação do usuário, com fallback para navegadores sem voz disponível.
             function speak(text, langCode) {
                 const correctLang = langCode || 'en-US';
-                
-                // Detecta se está sendo executado no WebView do Android (como no APK do Website2APK)
-                const isWebView = /wv|Android.*Version\/[0-9.]+/i.test(navigator.userAgent);
-                
-                if ('speechSynthesis' in window && !isWebView) {
-                    // Caminho Padrão: Executa no navegador comum usando a Web Speech API
-                    window.speechSynthesis.cancel();
-                    const u = new SpeechSynthesisUtterance(text);
-                    u.lang = correctLang;
-                    window.speechSynthesis.speak(u);
-                } else {
-                    // Caminho Fallback Mágico: Executa perfeitamente dentro do WebView do APK
-                    try {
-                        const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${correctLang}&client=tw-ob&q=${encodeURIComponent(text)}`;
-                        const audio = new Audio(audioUrl);
-                        audio.play().catch(err => console.log("Erro ao reproduzir áudio do APK:", err));
-                    } catch (e) {
-                        console.error("Não foi possível inicializar áudio alternativo:", e);
-                    }
+
+                const playFallback = () => {
+                    const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${correctLang}&client=tw-ob&q=${encodeURIComponent(text)}`;
+                    const audio = new Audio(audioUrl);
+                    audio.play().catch(err => console.log("Erro ao reproduzir áudio alternativo:", err));
+                };
+
+                if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+                    playFallback();
+                    return;
                 }
+
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = correctLang;
+                utterance.onerror = playFallback;
+                window.speechSynthesis.speak(utterance);
             }
             window.speak = speak;
 
