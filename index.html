@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -58,12 +58,81 @@
             width: 100%;
             max-width: 480px;
             margin: 0 auto;
+            position: relative;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 20px;
             transition: all 0.3s ease;
             animation: appFadeIn 1.7s ease both;
             will-change: opacity, transform;
+            border: 3px solid #00ff55;
+            border-radius: 24px;
+            background: #0d1220;
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.8),
+                0 0 30px rgba(0, 255, 85, 0.15);
+        }
+
+        .settings-menu {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 100;
+        }
+        .settings-trigger {
+            width: 44px;
+            height: 44px;
+            border: 1.5px solid #334155;
+            border-radius: 12px;
+            background: #111827;
+            color: #00ff55;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .settings-trigger:hover,
+        .settings-trigger:focus-visible {
+            border-color: #00ff55;
+            outline: none;
+        }
+        .settings-panel {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: min(250px, calc(100vw - 48px));
+            max-height: min(65vh, 420px);
+            overflow-y: auto;
+            padding: 8px;
+            border: 1.5px solid #334155;
+            border-radius: 14px;
+            background: #0f172a;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+        }
+        .settings-panel[hidden] { display: none; }
+        .settings-panel p {
+            padding: 8px 10px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .settings-item {
+            width: 100%;
+            padding: 10px;
+            border: 0;
+            border-radius: 9px;
+            background: transparent;
+            color: #f1f5f9;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+        }
+        .settings-item:hover,
+        .settings-item:focus-visible,
+        .settings-item[aria-checked="true"] {
+            background: rgba(0, 255, 85, 0.12);
+            color: #00ff55;
+            outline: none;
         }
 
         /* --- DESIGN ADAPTATIVO PARA SMARTPHONE E PC --- */
@@ -73,12 +142,8 @@
                 padding: 40px 16px;
             }
             .app-container {
-                border: 3px solid #00ff55;
                 border-radius: 28px;
                 padding: 28px;
-                background: #0d1220;
-                box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 255, 85, 0.15);
-                position: relative;
             }
             /* Detalhe de luz LED de consola retro no topo do dispositivo em PCs */
             .app-container::before {
@@ -92,8 +157,24 @@
             }
         }
 
+        @media (max-width: 380px) {
+            .app-container {
+                padding: 14px;
+                border-radius: 20px;
+            }
+            .settings-menu {
+                top: 10px;
+                right: 10px;
+            }
+            #mainContainer > .actions,
+            .detail-actions {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
         .app-header { 
             text-align: center; 
+            padding-top: 32px;
             margin-top: 15px; 
             margin-bottom: 5px; 
         }
@@ -231,6 +312,29 @@
             display: flex; justify-content: space-between; align-items: center; gap: 12px;
             transition: border-color 0.2s;
             position: relative;
+            width: 100%;
+            min-width: 0;
+        }
+        .word-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .word-native {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+        .word-translation {
+            color: orange;
+            font-size: 1.1rem;
+            margin-top: 2px;
+            text-align: left;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
         .word-card.mastered {
             border-color: rgba(0, 255, 85, 0.3);
@@ -324,6 +428,21 @@
             justify-content: center;
             text-shadow: 0 0 10px rgba(0, 255, 85, 0.3);
         }
+        .correct-answer-card {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            padding: 12px 16px;
+            border: 1.5px solid #334155;
+            border-radius: 16px;
+            background: #131a26;
+            color: #00ff55;
+            font-size: 1.35rem;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            text-shadow: none;
+        }
 
         .feedback-image {
             max-width: 100px;
@@ -373,19 +492,40 @@
 <body>
 
     <div class="app-container">
-        
+        <div class="settings-menu">
+            <button type="button" class="settings-trigger" id="settingsTrigger"
+                    aria-label="Idioma do app" aria-expanded="false" aria-controls="languagePanel"
+                    title="Idioma do app">⋮</button>
+            <div class="settings-panel" id="languagePanel" role="menu" hidden>
+                <p id="languageMenuTitle">Idioma do app</p>
+                <button type="button" class="settings-item" data-app-language="pt" role="menuitemradio">🇧🇷 Português</button>
+                <button type="button" class="settings-item" data-app-language="en" role="menuitemradio">🇺🇸 English</button>
+                <button type="button" class="settings-item" data-app-language="es" role="menuitemradio">🇪🇸 Español</button>
+                <button type="button" class="settings-item" data-app-language="zh" role="menuitemradio">🇨🇳 中文</button>
+                <button type="button" class="settings-item" data-app-language="hi" role="menuitemradio">🇮🇳 हिन्दी</button>
+                <button type="button" class="settings-item" data-app-language="ar" role="menuitemradio">🇸🇦 العربية</button>
+                <button type="button" class="settings-item" data-app-language="bn" role="menuitemradio">🇧🇩 বাংলা</button>
+                <button type="button" class="settings-item" data-app-language="ru" role="menuitemradio">🇷🇺 Русский</button>
+                <button type="button" class="settings-item" data-app-language="fr" role="menuitemradio">🇫🇷 Français</button>
+                <button type="button" class="settings-item" data-app-language="id" role="menuitemradio">🇮🇩 Bahasa Indonesia</button>
+                <button type="button" class="settings-item" data-app-language="ur" role="menuitemradio">🇵🇰 اردو</button>
+                <button type="button" class="settings-item" data-app-language="de" role="menuitemradio">🇩🇪 Deutsch</button>
+                <button type="button" class="settings-item" data-app-language="ja" role="menuitemradio">🇯🇵 日本語</button>
+                <button type="button" class="settings-item" data-app-language="ko" role="menuitemradio">🇰🇷 한국어</button>
+            </div>
+        </div>
         <!-- HEADER -->
         <header class="app-header">
 
             <h2>Developed by DougX</h2>
 
-            <h1>Meus Idiomas</h1>
+            <h1 data-i18n="appTitle">Meus Idiomas</h1>
 
         </header>
         <main id="mainContainer">
             <div class="actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; width: 100%;">
-                <button id="newNotebookBtn" class="btn action-btn-kryptonite" style="width: 100%; font-size: 1.25rem;">+ Novo Caderno</button>
-                <button id="mainPracticeBtn" class="btn action-btn-kryptonite" style="width: 100%; font-size: 1.25rem;">📒 Praticar</button>
+                <button id="newNotebookBtn" class="btn action-btn-kryptonite" style="width: 100%; font-size: 1.25rem;" data-i18n="newNotebook">+ Novo Caderno</button>
+                <button id="mainPracticeBtn" class="btn action-btn-kryptonite" style="width: 100%; font-size: 1.25rem;" data-i18n="practice">📒 Praticar</button>
             </div>
             <div class="notebook-list" id="notebookList"></div>
         </main>
@@ -393,16 +533,16 @@
         <!-- CADERNO EM DETALHES -->
         <section id="notebookDetail" class="hidden">
             <header class="detail-header" style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                <button id="backBtn" class="btn secondary" style="padding: 10px 16px; font-size: 0.9rem; border: 2px solid #ffffff;">← Voltar</button>
+                <button id="backBtn" class="btn secondary" style="padding: 10px 16px; font-size: 0.9rem; border: 2px solid #ffffff;" data-i18n="back">← Voltar</button>
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <div id="detailTitle" style="font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 8px; max-width: 220px; color:#f1f5f9;"></div>
-                    <button id="resetProgressBtn" class="action-icon-btn" style="color: #94a3b8; font-size: 1.15rem; padding: 4px;" title="Zerar Progresso">🔄</button>
+                    <button id="resetProgressBtn" class="action-icon-btn" style="color: #94a3b8; font-size: 1.15rem; padding: 4px;" data-i18n-title="resetProgress" title="Zerar Progresso">🔄</button>
                 </div>
             </header>
             
             <div class="detail-actions" style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button id="addWordBtn" class="btn primary" style="border: 2px solid #ffffff; font-size: 1.35rem;">+ Nova Palavra</button>
-                <button id="detailPracticeBtn" class="btn success" style="border: 2px solid #fdfdfd; font-size: 1.35rem;">Praticar</button>
+                <button id="addWordBtn" class="btn primary" style="border: 2px solid #ffffff; font-size: 1.35rem;" data-i18n="newWord">+ Nova Palavra</button>
+                <button id="detailPracticeBtn" class="btn success" style="border: 2px solid #fdfdfd; font-size: 1.35rem;" data-i18n="detailPractice">Praticar</button>
             </div>
             
             <div id="wordList" class="word-list"></div>
@@ -413,18 +553,18 @@
             <div class="practice-container">
                 <div class="practice-word-wrapper" style="display:flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
                     <h2 id="practiceNative" style="font-size: 1.8rem; color: #f9f9f9;"></h2> 
-                    <button id="practiceAudioBtn" class="audio-btn" title="Ouvir pronúncia">🔊</button>
+                    <button id="practiceAudioBtn" class="audio-btn" data-i18n-title="listenPronunciation" title="Ouvir pronúncia">🔊</button>
                 </div>
                 
                 <div class="practice-input-group" style="display: flex; gap: 8px; width: 100%; margin-bottom: 12px; flex-direction: column;">
-                    <input type="text" id="practiceInput" placeholder="Sua tradução..." autocomplete="off" style="width: 100%; padding: 16px; border-radius: 16px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 1.1rem; text-align: center;">
+                    <input type="text" id="practiceInput" data-i18n-placeholder="yourTranslation" placeholder="Sua tradução..." autocomplete="off" style="width: 100%; padding: 16px; border-radius: 16px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 1.1rem; text-align: center;">
                 </div>
 
                 <p id="practiceNotes" style="color: #94a3b8; margin-bottom: 12px; font-style: italic;"></p>
                 <p id="practiceFeedback"></p>
                 <p id="practiceAttempts" style="color: #f87171; font-weight: bold;"></p>
                 
-                <button id="practiceQuitBtn" class="btn secondary" style="margin-top: 20px; width: 100%;">Sair do Treino</button>
+                <button id="practiceQuitBtn" class="btn secondary" style="margin-top: 20px; width: 100%;" data-i18n="quitPractice">Sair do Treino</button>
             </div>
         </section>
 
@@ -436,14 +576,375 @@
             <h3 id="modalTitle" style="margin-bottom: 15px; font-size: 1.3rem;"></h3>
             <div id="modalInputs"></div>
             <div id="modalFooter" style="display: flex; justify-content: center; gap: 12px; margin-top: 20px;">
-                <button id="modalCancelBtn" class="btn secondary" style="flex: 1; padding: 12px;">Cancelar</button>
-                <button id="modalConfirmBtn" class="btn primary" style="flex: 1; padding: 12px;">Confirmar</button>
+                <button id="modalCancelBtn" class="btn secondary" style="flex: 1; padding: 12px;" data-i18n="cancel">Cancelar</button>
+                <button id="modalConfirmBtn" class="btn primary" style="flex: 1; padding: 12px;" data-i18n="confirm">Confirmar</button>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const appLanguages = ['pt', 'en', 'es', 'zh', 'hi', 'ar', 'bn', 'ru', 'fr', 'id', 'ur', 'de', 'ja', 'ko'];
+            const appLocales = {
+                pt: 'pt-BR', en: 'en', es: 'es', zh: 'zh-CN', hi: 'hi-IN', ar: 'ar',
+                bn: 'bn-BD', ru: 'ru', fr: 'fr', id: 'id-ID', ur: 'ur-PK',
+                de: 'de', ja: 'ja', ko: 'ko'
+            };
+            const interfaceText = {
+                pt: {
+                    appTitle: 'Meus Idiomas', systemLanguage: 'Idioma do app', newNotebook: '+ Novo Caderno',
+                    practice: '📒 Praticar', back: '← Voltar', resetProgress: 'Zerar Progresso',
+                    newWord: '+ Nova Palavra', detailPractice: 'Praticar', listenPronunciation: 'Ouvir pronúncia',
+                    yourTranslation: 'Sua tradução...', quitPractice: 'Sair do Treino', cancel: 'Cancelar',
+                    confirm: 'Confirmar', emptyNotebooks: 'Nenhum caderno criado. Comece clicando em "+ Novo Caderno"!',
+                    words: 'palavras', completed: 'CONCLUÍDO', editNotebook: 'Editar Caderno',
+                    deleteNotebook: 'Excluir Caderno', deleteNotebookQuestion: 'Excluir Caderno?',
+                    deleteNotebookText: 'Tem certeza de que deseja excluir o caderno "{name}" e todas as suas palavras? Esta ação não pode ser desfeita.',
+                    emptyNotebook: 'Este caderno está vazio.', emptyNotebookHint: 'Clique em "+ Nova Palavra" para começar!',
+                    listenWord: 'Ouvir palavra', moreOptions: 'Mais opções', listen: 'Ouvir', edit: 'Editar',
+                    delete: 'Excluir', editWord: 'Editar Palavra', originalWord: 'Palavra/Frase Original',
+                    translation: 'Tradução', notebookName: 'Nome do Caderno',
+                    notebookExample: 'Nome do Caderno (ex: Japonês para Viagem)',
+                    nativeExample: 'Ex: Good Morning', translationExample: 'Ex: Bom dia',
+                    resetProgressQuestion: 'Zerar Progresso?', resetProgressText: 'Quer redefinir o progresso deste caderno? Todas as palavras voltarão a ser marcadas como não aprendidas.',
+                    correct: 'Correto', goodWork: '👍 BOM TRABALHO! 👍', score: 'Aproveitamento',
+                    practiceMore: 'Pratique mais para gabaritar!', trainingComplete: '📚 TREINO CONCLUÍDO',
+                    tryAgain: 'Tente novamente para melhorar!'
+                },
+                en: {
+                    appTitle: 'My Languages', systemLanguage: 'App language', newNotebook: '+ New Notebook',
+                    practice: '📒 Practice', back: '← Back', resetProgress: 'Reset Progress',
+                    newWord: '+ New Word', detailPractice: 'Practice', listenPronunciation: 'Listen to pronunciation',
+                    yourTranslation: 'Your translation...', quitPractice: 'Quit Practice', cancel: 'Cancel',
+                    confirm: 'Confirm', emptyNotebooks: 'No notebooks yet. Start by clicking "+ New Notebook"!',
+                    words: 'words', completed: 'COMPLETED', editNotebook: 'Edit Notebook',
+                    deleteNotebook: 'Delete Notebook', deleteNotebookQuestion: 'Delete Notebook?',
+                    deleteNotebookText: 'Are you sure you want to delete the notebook "{name}" and all its words? This cannot be undone.',
+                    emptyNotebook: 'This notebook is empty.', emptyNotebookHint: 'Click "+ New Word" to get started!',
+                    listenWord: 'Listen to word', moreOptions: 'More options', listen: 'Listen', edit: 'Edit',
+                    delete: 'Delete', editWord: 'Edit Word', originalWord: 'Original Word/Phrase',
+                    translation: 'Translation', notebookName: 'Notebook name',
+                    notebookExample: 'Notebook name (e.g. Japanese for Travel)',
+                    nativeExample: 'e.g. Good Morning', translationExample: 'e.g. Good morning',
+                    resetProgressQuestion: 'Reset progress?', resetProgressText: 'Reset this notebook’s progress? All words will be marked as not learned.',
+                    correct: 'Correct', goodWork: '👍 GOOD JOB! 👍', score: 'Score',
+                    practiceMore: 'Practice more to get a perfect score!', trainingComplete: '📚 PRACTICE COMPLETE',
+                    tryAgain: 'Try again to improve!'
+                },
+                es: {
+                    appTitle: 'Mis Idiomas', systemLanguage: 'Idioma de la app', newNotebook: '+ Nuevo cuaderno',
+                    practice: '📒 Practicar', back: '← Volver', resetProgress: 'Reiniciar progreso',
+                    newWord: '+ Nueva palabra', detailPractice: 'Practicar', listenPronunciation: 'Escuchar pronunciación',
+                    yourTranslation: 'Tu traducción...', quitPractice: 'Salir del entrenamiento', cancel: 'Cancelar',
+                    confirm: 'Confirmar', emptyNotebooks: 'Aún no hay cuadernos. ¡Haz clic en "+ Nuevo cuaderno" para empezar!',
+                    words: 'palabras', completed: 'COMPLETADO', editNotebook: 'Editar cuaderno',
+                    deleteNotebook: 'Eliminar cuaderno', deleteNotebookQuestion: '¿Eliminar cuaderno?',
+                    deleteNotebookText: '¿Seguro que quieres eliminar el cuaderno "{name}" y todas sus palabras? Esta acción no se puede deshacer.',
+                    emptyNotebook: 'Este cuaderno está vacío.', emptyNotebookHint: '¡Haz clic en "+ Nueva palabra" para empezar!',
+                    listenWord: 'Escuchar palabra', moreOptions: 'Más opciones', listen: 'Escuchar', edit: 'Editar',
+                    delete: 'Eliminar', editWord: 'Editar palabra', originalWord: 'Palabra/frase original',
+                    translation: 'Traducción', notebookName: 'Nombre del cuaderno',
+                    notebookExample: 'Nombre del cuaderno (ej.: Japonés para viajar)',
+                    nativeExample: 'Ej.: Good Morning', translationExample: 'Ej.: Buenos días',
+                    resetProgressQuestion: '¿Reiniciar progreso?', resetProgressText: '¿Quieres reiniciar el progreso? Todas las palabras volverán a marcarse como no aprendidas.',
+                    correct: 'Correcto', goodWork: '👍 ¡BUEN TRABAJO! 👍', score: 'Puntuación',
+                    practiceMore: '¡Practica más para obtener la máxima puntuación!', trainingComplete: '📚 ENTRENAMIENTO COMPLETADO',
+                    tryAgain: '¡Inténtalo de nuevo para mejorar!'
+                },
+                zh: {
+                    appTitle: '我的语言', systemLanguage: '应用语言', newNotebook: '+ 新建词本',
+                    practice: '📒 练习', back: '← 返回', resetProgress: '重置进度',
+                    newWord: '+ 添加单词', detailPractice: '练习', listenPronunciation: '听发音',
+                    yourTranslation: '输入译文...', quitPractice: '退出练习', cancel: '取消',
+                    confirm: '确认', emptyNotebooks: '还没有词本。点击“+ 新建词本”开始吧！',
+                    words: '个单词', completed: '已完成', editNotebook: '编辑词本',
+                    deleteNotebook: '删除词本', deleteNotebookQuestion: '删除词本？',
+                    deleteNotebookText: '确定删除词本“{name}”及其中的所有单词吗？此操作无法撤销。',
+                    emptyNotebook: '此词本为空。', emptyNotebookHint: '点击“+ 添加单词”开始！',
+                    listenWord: '听单词', moreOptions: '更多选项', listen: '听', edit: '编辑',
+                    delete: '删除', editWord: '编辑单词', originalWord: '原词/短语',
+                    translation: '译文', notebookName: '词本名称',
+                    notebookExample: '词本名称（例如：旅行日语）',
+                    nativeExample: '例如：Good Morning', translationExample: '例如：早上好',
+                    resetProgressQuestion: '重置进度？', resetProgressText: '确定重置此词本的进度吗？所有单词将标记为未掌握。',
+                    correct: '正确', goodWork: '👍 做得好！👍', score: '正确率',
+                    practiceMore: '多练习，争取满分！', trainingComplete: '📚 练习完成',
+                    tryAgain: '再试一次，继续进步！'
+                },
+                hi: {
+                    appTitle: 'मेरी भाषाएँ', systemLanguage: 'ऐप की भाषा', newNotebook: '+ नई नोटबुक',
+                    practice: '📒 अभ्यास', back: '← वापस', resetProgress: 'प्रगति रीसेट करें',
+                    newWord: '+ नया शब्द', detailPractice: 'अभ्यास', listenPronunciation: 'उच्चारण सुनें',
+                    yourTranslation: 'अपना अनुवाद लिखें...', quitPractice: 'अभ्यास छोड़ें', cancel: 'रद्द करें',
+                    confirm: 'पुष्टि करें', emptyNotebooks: 'अभी कोई नोटबुक नहीं है। शुरू करने के लिए "+ नई नोटबुक" चुनें!',
+                    words: 'शब्द', completed: 'पूरा हुआ', editNotebook: 'नोटबुक संपादित करें',
+                    deleteNotebook: 'नोटबुक हटाएँ', deleteNotebookQuestion: 'नोटबुक हटाएँ?',
+                    deleteNotebookText: 'क्या आप "{name}" नोटबुक और उसके सभी शब्द हटाना चाहते हैं? यह वापस नहीं किया जा सकता।',
+                    emptyNotebook: 'यह नोटबुक खाली है।', emptyNotebookHint: 'शुरू करने के लिए "+ नया शब्द" चुनें!',
+                    listenWord: 'शब्द सुनें', moreOptions: 'और विकल्प', listen: 'सुनें', edit: 'संपादित करें',
+                    delete: 'हटाएँ', editWord: 'शब्द संपादित करें', originalWord: 'मूल शब्द/वाक्यांश',
+                    translation: 'अनुवाद', notebookName: 'नोटबुक का नाम',
+                    notebookExample: 'नोटबुक का नाम (जैसे: यात्रा के लिए जापानी)',
+                    nativeExample: 'जैसे: Good Morning', translationExample: 'जैसे: सुप्रभात',
+                    resetProgressQuestion: 'प्रगति रीसेट करें?', resetProgressText: 'क्या आप इस नोटबुक की प्रगति रीसेट करना चाहते हैं? सभी शब्द फिर से अधूरे चिह्नित होंगे।',
+                    correct: 'सही', goodWork: '👍 बहुत बढ़िया! 👍', score: 'स्कोर',
+                    practiceMore: 'पूरा स्कोर पाने के लिए और अभ्यास करें!', trainingComplete: '📚 अभ्यास पूरा हुआ',
+                    tryAgain: 'बेहतर करने के लिए फिर कोशिश करें!'
+                },
+                ar: {
+                    appTitle: 'لغاتي', systemLanguage: 'لغة التطبيق', newNotebook: '+ دفتر جديد',
+                    practice: '📒 تدريب', back: '→ رجوع', resetProgress: 'إعادة ضبط التقدم',
+                    newWord: '+ كلمة جديدة', detailPractice: 'تدريب', listenPronunciation: 'استمع إلى النطق',
+                    yourTranslation: 'ترجمتك...', quitPractice: 'إنهاء التدريب', cancel: 'إلغاء',
+                    confirm: 'تأكيد', emptyNotebooks: 'لا توجد دفاتر بعد. ابدأ بالنقر على "+ دفتر جديد"!',
+                    words: 'كلمات', completed: 'مكتمل', editNotebook: 'تعديل الدفتر',
+                    deleteNotebook: 'حذف الدفتر', deleteNotebookQuestion: 'حذف الدفتر؟',
+                    deleteNotebookText: 'هل تريد حذف دفتر "{name}" وجميع كلماته؟ لا يمكن التراجع عن هذا الإجراء.',
+                    emptyNotebook: 'هذا الدفتر فارغ.', emptyNotebookHint: 'انقر على "+ كلمة جديدة" للبدء!',
+                    listenWord: 'استمع إلى الكلمة', moreOptions: 'خيارات إضافية', listen: 'استمع', edit: 'تعديل',
+                    delete: 'حذف', editWord: 'تعديل الكلمة', originalWord: 'الكلمة/العبارة الأصلية',
+                    translation: 'الترجمة', notebookName: 'اسم الدفتر',
+                    notebookExample: 'اسم الدفتر (مثال: اليابانية للسفر)',
+                    nativeExample: 'مثال: Good Morning', translationExample: 'مثال: صباح الخير',
+                    resetProgressQuestion: 'إعادة ضبط التقدم؟', resetProgressText: 'هل تريد إعادة ضبط تقدم هذا الدفتر؟ ستُعلّم جميع الكلمات كغير متعلمة.',
+                    correct: 'صحيح', goodWork: '👍 أحسنت! 👍', score: 'النتيجة',
+                    practiceMore: 'تدرّب أكثر لتحصل على الدرجة الكاملة!', trainingComplete: '📚 اكتمل التدريب',
+                    tryAgain: 'حاول مرة أخرى لتحسين نتيجتك!'
+                },
+                bn: {
+                    appTitle: 'আমার ভাষাসমূহ', systemLanguage: 'অ্যাপের ভাষা', newNotebook: '+ নতুন খাতা',
+                    practice: '📒 অনুশীলন', back: '← ফিরে যান', resetProgress: 'অগ্রগতি রিসেট',
+                    newWord: '+ নতুন শব্দ', detailPractice: 'অনুশীলন', listenPronunciation: 'উচ্চারণ শুনুন',
+                    yourTranslation: 'আপনার অনুবাদ...', quitPractice: 'অনুশীলন ছাড়ুন', cancel: 'বাতিল',
+                    confirm: 'নিশ্চিত করুন', emptyNotebooks: 'এখনও কোনো খাতা নেই। শুরু করতে "+ নতুন খাতা" চাপুন!',
+                    words: 'টি শব্দ', completed: 'সম্পন্ন', editNotebook: 'খাতা সম্পাদনা',
+                    deleteNotebook: 'খাতা মুছুন', deleteNotebookQuestion: 'খাতা মুছবেন?',
+                    deleteNotebookText: '"{name}" খাতা ও এর সব শব্দ মুছতে চান? এটি আর ফেরানো যাবে না।',
+                    emptyNotebook: 'এই খাতাটি খালি।', emptyNotebookHint: 'শুরু করতে "+ নতুন শব্দ" চাপুন!',
+                    listenWord: 'শব্দ শুনুন', moreOptions: 'আরও বিকল্প', listen: 'শুনুন', edit: 'সম্পাদনা',
+                    delete: 'মুছুন', editWord: 'শব্দ সম্পাদনা', originalWord: 'মূল শব্দ/বাক্যাংশ',
+                    translation: 'অনুবাদ', notebookName: 'খাতার নাম',
+                    notebookExample: 'খাতার নাম (যেমন: ভ্রমণের জন্য জাপানি)',
+                    nativeExample: 'যেমন: Good Morning', translationExample: 'যেমন: সুপ্রভাত',
+                    resetProgressQuestion: 'অগ্রগতি রিসেট করবেন?', resetProgressText: 'এই খাতার অগ্রগতি রিসেট করতে চান? সব শব্দ আবার শেখা হয়নি হিসেবে চিহ্নিত হবে।',
+                    correct: 'সঠিক', goodWork: '👍 দারুণ কাজ! 👍', score: 'স্কোর',
+                    practiceMore: 'পূর্ণ নম্বর পেতে আরও অনুশীলন করুন!', trainingComplete: '📚 অনুশীলন সম্পন্ন',
+                    tryAgain: 'উন্নতি করতে আবার চেষ্টা করুন!'
+                },
+                ru: {
+                    appTitle: 'Мои языки', systemLanguage: 'Язык приложения', newNotebook: '+ Новый блокнот',
+                    practice: '📒 Практика', back: '← Назад', resetProgress: 'Сбросить прогресс',
+                    newWord: '+ Новое слово', detailPractice: 'Практика', listenPronunciation: 'Прослушать произношение',
+                    yourTranslation: 'Ваш перевод...', quitPractice: 'Выйти из тренировки', cancel: 'Отмена',
+                    confirm: 'Подтвердить', emptyNotebooks: 'Блокнотов пока нет. Нажмите «+ Новый блокнот», чтобы начать!',
+                    words: 'слов', completed: 'ЗАВЕРШЕНО', editNotebook: 'Изменить блокнот',
+                    deleteNotebook: 'Удалить блокнот', deleteNotebookQuestion: 'Удалить блокнот?',
+                    deleteNotebookText: 'Удалить блокнот «{name}» и все его слова? Это действие нельзя отменить.',
+                    emptyNotebook: 'Этот блокнот пуст.', emptyNotebookHint: 'Нажмите «+ Новое слово», чтобы начать!',
+                    listenWord: 'Прослушать слово', moreOptions: 'Другие параметры', listen: 'Слушать', edit: 'Изменить',
+                    delete: 'Удалить', editWord: 'Изменить слово', originalWord: 'Исходное слово/фраза',
+                    translation: 'Перевод', notebookName: 'Название блокнота',
+                    notebookExample: 'Название блокнота (например: Японский для путешествий)',
+                    nativeExample: 'Например: Good Morning', translationExample: 'Например: Доброе утро',
+                    resetProgressQuestion: 'Сбросить прогресс?', resetProgressText: 'Сбросить прогресс этого блокнота? Все слова снова будут отмечены как неизученные.',
+                    correct: 'Верно', goodWork: '👍 ОТЛИЧНАЯ РАБОТА! 👍', score: 'Результат',
+                    practiceMore: 'Практикуйтесь ещё, чтобы получить максимум!', trainingComplete: '📚 ТРЕНИРОВКА ЗАВЕРШЕНА',
+                    tryAgain: 'Попробуйте ещё раз, чтобы улучшить результат!'
+                },
+                fr: {
+                    appTitle: 'Mes langues', systemLanguage: 'Langue de l’application', newNotebook: '+ Nouveau carnet',
+                    practice: '📒 Pratiquer', back: '← Retour', resetProgress: 'Réinitialiser la progression',
+                    newWord: '+ Nouveau mot', detailPractice: 'Pratiquer', listenPronunciation: 'Écouter la prononciation',
+                    yourTranslation: 'Votre traduction...', quitPractice: 'Quitter l’entraînement', cancel: 'Annuler',
+                    confirm: 'Confirmer', emptyNotebooks: 'Aucun carnet. Cliquez sur « + Nouveau carnet » pour commencer !',
+                    words: 'mots', completed: 'TERMINÉ', editNotebook: 'Modifier le carnet',
+                    deleteNotebook: 'Supprimer le carnet', deleteNotebookQuestion: 'Supprimer le carnet ?',
+                    deleteNotebookText: 'Supprimer le carnet « {name} » et tous ses mots ? Cette action est irréversible.',
+                    emptyNotebook: 'Ce carnet est vide.', emptyNotebookHint: 'Cliquez sur « + Nouveau mot » pour commencer !',
+                    listenWord: 'Écouter le mot', moreOptions: 'Plus d’options', listen: 'Écouter', edit: 'Modifier',
+                    delete: 'Supprimer', editWord: 'Modifier le mot', originalWord: 'Mot/phrase d’origine',
+                    translation: 'Traduction', notebookName: 'Nom du carnet',
+                    notebookExample: 'Nom du carnet (ex. : Japonais pour voyager)',
+                    nativeExample: 'Ex. : Good Morning', translationExample: 'Ex. : Bonjour',
+                    resetProgressQuestion: 'Réinitialiser la progression ?', resetProgressText: 'Réinitialiser la progression de ce carnet ? Tous les mots seront marqués comme non appris.',
+                    correct: 'Correct', goodWork: '👍 BEAU TRAVAIL ! 👍', score: 'Résultat',
+                    practiceMore: 'Pratiquez encore pour obtenir le score parfait !', trainingComplete: '📚 ENTRAÎNEMENT TERMINÉ',
+                    tryAgain: 'Réessayez pour vous améliorer !'
+                },
+                id: {
+                    appTitle: 'Bahasa Saya', systemLanguage: 'Bahasa aplikasi', newNotebook: '+ Buku catatan baru',
+                    practice: '📒 Berlatih', back: '← Kembali', resetProgress: 'Atur ulang progres',
+                    newWord: '+ Kata baru', detailPractice: 'Berlatih', listenPronunciation: 'Dengarkan pelafalan',
+                    yourTranslation: 'Terjemahan Anda...', quitPractice: 'Keluar dari latihan', cancel: 'Batal',
+                    confirm: 'Konfirmasi', emptyNotebooks: 'Belum ada buku catatan. Klik "+ Buku catatan baru" untuk memulai!',
+                    words: 'kata', completed: 'SELESAI', editNotebook: 'Edit buku catatan',
+                    deleteNotebook: 'Hapus buku catatan', deleteNotebookQuestion: 'Hapus buku catatan?',
+                    deleteNotebookText: 'Hapus buku catatan "{name}" beserta semua katanya? Tindakan ini tidak dapat dibatalkan.',
+                    emptyNotebook: 'Buku catatan ini kosong.', emptyNotebookHint: 'Klik "+ Kata baru" untuk memulai!',
+                    listenWord: 'Dengarkan kata', moreOptions: 'Opsi lainnya', listen: 'Dengarkan', edit: 'Edit',
+                    delete: 'Hapus', editWord: 'Edit kata', originalWord: 'Kata/frasa asli',
+                    translation: 'Terjemahan', notebookName: 'Nama buku catatan',
+                    notebookExample: 'Nama buku catatan (mis. Jepang untuk perjalanan)',
+                    nativeExample: 'Mis. Good Morning', translationExample: 'Mis. Selamat pagi',
+                    resetProgressQuestion: 'Atur ulang progres?', resetProgressText: 'Atur ulang progres buku catatan ini? Semua kata akan ditandai belum dipelajari.',
+                    correct: 'Benar', goodWork: '👍 KERJA BAGUS! 👍', score: 'Skor',
+                    practiceMore: 'Berlatih lagi untuk mendapat nilai sempurna!', trainingComplete: '📚 LATIHAN SELESAI',
+                    tryAgain: 'Coba lagi untuk meningkatkan hasil!'
+                },
+                ur: {
+                    appTitle: 'میری زبانیں', systemLanguage: 'ایپ کی زبان', newNotebook: '+ نئی کاپی',
+                    practice: '📒 مشق', back: '← واپس', resetProgress: 'پیش رفت دوبارہ ترتیب دیں',
+                    newWord: '+ نیا لفظ', detailPractice: 'مشق', listenPronunciation: 'تلفظ سنیں',
+                    yourTranslation: 'آپ کا ترجمہ...', quitPractice: 'مشق چھوڑیں', cancel: 'منسوخ',
+                    confirm: 'تصدیق', emptyNotebooks: 'ابھی کوئی کاپی نہیں۔ شروع کرنے کے لیے "+ نئی کاپی" پر کلک کریں!',
+                    words: 'الفاظ', completed: 'مکمل', editNotebook: 'کاپی میں ترمیم',
+                    deleteNotebook: 'کاپی حذف کریں', deleteNotebookQuestion: 'کاپی حذف کریں؟',
+                    deleteNotebookText: 'کیا آپ "{name}" کاپی اور اس کے تمام الفاظ حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں ہو سکتا۔',
+                    emptyNotebook: 'یہ کاپی خالی ہے۔', emptyNotebookHint: 'شروع کرنے کے لیے "+ نیا لفظ" پر کلک کریں!',
+                    listenWord: 'لفظ سنیں', moreOptions: 'مزید اختیارات', listen: 'سنیں', edit: 'ترمیم',
+                    delete: 'حذف', editWord: 'لفظ میں ترمیم', originalWord: 'اصل لفظ/فقرہ',
+                    translation: 'ترجمہ', notebookName: 'کاپی کا نام',
+                    notebookExample: 'کاپی کا نام (مثال: سفر کے لیے جاپانی)',
+                    nativeExample: 'مثال: Good Morning', translationExample: 'مثال: صبح بخیر',
+                    resetProgressQuestion: 'پیش رفت دوبارہ ترتیب دیں؟', resetProgressText: 'اس کاپی کی پیش رفت دوبارہ ترتیب دیں؟ تمام الفاظ کو دوبارہ غیر سیکھا ہوا نشان زد کیا جائے گا۔',
+                    correct: 'درست', goodWork: '👍 بہت خوب! 👍', score: 'اسکور',
+                    practiceMore: 'مکمل نمبر کے لیے مزید مشق کریں!', trainingComplete: '📚 مشق مکمل',
+                    tryAgain: 'بہتری کے لیے دوبارہ کوشش کریں!'
+                },
+                de: {
+                    appTitle: 'Meine Sprachen', systemLanguage: 'App-Sprache', newNotebook: '+ Neues Notizbuch',
+                    practice: '📒 Üben', back: '← Zurück', resetProgress: 'Fortschritt zurücksetzen',
+                    newWord: '+ Neues Wort', detailPractice: 'Üben', listenPronunciation: 'Aussprache anhören',
+                    yourTranslation: 'Deine Übersetzung...', quitPractice: 'Training beenden', cancel: 'Abbrechen',
+                    confirm: 'Bestätigen', emptyNotebooks: 'Noch keine Notizbücher. Klicke auf „+ Neues Notizbuch“, um zu beginnen!',
+                    words: 'Wörter', completed: 'ABGESCHLOSSEN', editNotebook: 'Notizbuch bearbeiten',
+                    deleteNotebook: 'Notizbuch löschen', deleteNotebookQuestion: 'Notizbuch löschen?',
+                    deleteNotebookText: 'Möchtest du das Notizbuch „{name}“ und alle Wörter löschen? Dies kann nicht rückgängig gemacht werden.',
+                    emptyNotebook: 'Dieses Notizbuch ist leer.', emptyNotebookHint: 'Klicke auf „+ Neues Wort“, um zu beginnen!',
+                    listenWord: 'Wort anhören', moreOptions: 'Weitere Optionen', listen: 'Anhören', edit: 'Bearbeiten',
+                    delete: 'Löschen', editWord: 'Wort bearbeiten', originalWord: 'Originalwort/-phrase',
+                    translation: 'Übersetzung', notebookName: 'Notizbuchname',
+                    notebookExample: 'Notizbuchname (z. B. Japanisch für Reisen)',
+                    nativeExample: 'z. B. Good Morning', translationExample: 'z. B. Guten Morgen',
+                    resetProgressQuestion: 'Fortschritt zurücksetzen?', resetProgressText: 'Fortschritt dieses Notizbuchs zurücksetzen? Alle Wörter werden wieder als ungelernt markiert.',
+                    correct: 'Richtig', goodWork: '👍 GUT GEMACHT! 👍', score: 'Ergebnis',
+                    practiceMore: 'Übe weiter für die volle Punktzahl!', trainingComplete: '📚 TRAINING ABGESCHLOSSEN',
+                    tryAgain: 'Versuche es erneut, um dich zu verbessern!'
+                },
+                ja: {
+                    appTitle: '私の言語', systemLanguage: 'アプリの言語', newNotebook: '+ 新しいノート',
+                    practice: '📒 練習', back: '← 戻る', resetProgress: '進捗をリセット',
+                    newWord: '+ 新しい単語', detailPractice: '練習', listenPronunciation: '発音を聞く',
+                    yourTranslation: '翻訳を入力...', quitPractice: '練習を終了', cancel: 'キャンセル',
+                    confirm: '確認', emptyNotebooks: 'ノートがありません。「+ 新しいノート」をクリックして始めましょう！',
+                    words: '語', completed: '完了', editNotebook: 'ノートを編集',
+                    deleteNotebook: 'ノートを削除', deleteNotebookQuestion: 'ノートを削除しますか？',
+                    deleteNotebookText: '「{name}」とすべての単語を削除しますか？この操作は取り消せません。',
+                    emptyNotebook: 'このノートは空です。', emptyNotebookHint: '「+ 新しい単語」をクリックして始めましょう！',
+                    listenWord: '単語を聞く', moreOptions: 'その他のオプション', listen: '聞く', edit: '編集',
+                    delete: '削除', editWord: '単語を編集', originalWord: '元の単語・フレーズ',
+                    translation: '翻訳', notebookName: 'ノート名',
+                    notebookExample: 'ノート名（例：旅行のための日本語）',
+                    nativeExample: '例：Good Morning', translationExample: '例：おはよう',
+                    resetProgressQuestion: '進捗をリセットしますか？', resetProgressText: 'このノートの進捗をリセットしますか？すべての単語が未習得に戻ります。',
+                    correct: '正解', goodWork: '👍 よくできました！ 👍', score: '正答率',
+                    practiceMore: '満点を目指して練習しましょう！', trainingComplete: '📚 練習完了',
+                    tryAgain: 'もう一度挑戦して上達しましょう！'
+                },
+                ko: {
+                    appTitle: '나의 언어', systemLanguage: '앱 언어', newNotebook: '+ 새 단어장',
+                    practice: '📒 연습', back: '← 돌아가기', resetProgress: '진행 상황 초기화',
+                    newWord: '+ 새 단어', detailPractice: '연습', listenPronunciation: '발음 듣기',
+                    yourTranslation: '번역을 입력하세요...', quitPractice: '연습 종료', cancel: '취소',
+                    confirm: '확인', emptyNotebooks: '단어장이 없습니다. "+ 새 단어장"을 눌러 시작하세요!',
+                    words: '개 단어', completed: '완료', editNotebook: '단어장 수정',
+                    deleteNotebook: '단어장 삭제', deleteNotebookQuestion: '단어장을 삭제할까요?',
+                    deleteNotebookText: '"{name}" 단어장과 모든 단어를 삭제할까요? 이 작업은 되돌릴 수 없습니다.',
+                    emptyNotebook: '이 단어장은 비어 있습니다.', emptyNotebookHint: '시작하려면 "+ 새 단어"를 누르세요!',
+                    listenWord: '단어 듣기', moreOptions: '더 많은 옵션', listen: '듣기', edit: '수정',
+                    delete: '삭제', editWord: '단어 수정', originalWord: '원래 단어/문구',
+                    translation: '번역', notebookName: '단어장 이름',
+                    notebookExample: '단어장 이름 (예: 여행 일본어)',
+                    nativeExample: '예: Good Morning', translationExample: '예: 좋은 아침',
+                    resetProgressQuestion: '진행 상황을 초기화할까요?', resetProgressText: '이 단어장의 진행 상황을 초기화할까요? 모든 단어가 미학습 상태로 바뀝니다.',
+                    correct: '정답', goodWork: '👍 잘했어요! 👍', score: '점수',
+                    practiceMore: '만점을 위해 더 연습하세요!', trainingComplete: '📚 연습 완료',
+                    tryAgain: '다시 도전해서 실력을 높여 보세요!'
+                }
+            };
+            const savedAppLanguage = localStorage.getItem('meus-idiomas-ui-language');
+            const detectedLanguage = (navigator.languages || [navigator.language || 'en'])
+                .map(language => language.toLowerCase().split('-')[0])
+                .find(language => appLanguages.includes(language));
+            let appLanguage = appLanguages.includes(savedAppLanguage)
+                ? savedAppLanguage
+                : (detectedLanguage || 'en');
+
+            function t(key, values = {}) {
+                let text = interfaceText[appLanguage][key] || interfaceText.en[key] || key;
+                Object.entries(values).forEach(([name, value]) => {
+                    text = text.replace(`{${name}}`, value);
+                });
+                return text;
+            }
+
+            function applyAppLanguage() {
+                document.documentElement.lang = appLocales[appLanguage];
+                document.documentElement.dir = ['ar', 'ur'].includes(appLanguage) ? 'rtl' : 'ltr';
+                document.title = t('appTitle');
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    element.textContent = t(element.dataset.i18n);
+                });
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                    element.placeholder = t(element.dataset.i18nPlaceholder);
+                });
+                document.querySelectorAll('[data-i18n-title]').forEach(element => {
+                    element.title = t(element.dataset.i18nTitle);
+                });
+                document.querySelectorAll('[data-i18n-label]').forEach(element => {
+                    element.setAttribute('aria-label', t(element.dataset.i18nLabel));
+                });
+                document.getElementById('languageMenuTitle').textContent = t('systemLanguage');
+                document.querySelectorAll('[data-app-language]').forEach(button => {
+                    button.setAttribute('aria-checked', String(button.dataset.appLanguage === appLanguage));
+                });
+                document.getElementById('settingsTrigger').setAttribute('aria-label', t('systemLanguage'));
+                document.getElementById('settingsTrigger').title = t('systemLanguage');
+            }
+
+            const settingsTrigger = document.getElementById('settingsTrigger');
+            const languagePanel = document.getElementById('languagePanel');
+            settingsTrigger.addEventListener('click', () => {
+                const isOpen = !languagePanel.hidden;
+                languagePanel.hidden = isOpen;
+                settingsTrigger.setAttribute('aria-expanded', String(!isOpen));
+            });
+            languagePanel.addEventListener('click', event => {
+                const languageButton = event.target.closest('[data-app-language]');
+                if (!languageButton) return;
+                appLanguage = languageButton.dataset.appLanguage;
+                localStorage.setItem('meus-idiomas-ui-language', appLanguage);
+                applyAppLanguage();
+                languagePanel.hidden = true;
+                settingsTrigger.setAttribute('aria-expanded', 'false');
+                renderNotebooks();
+                if (currentIndex !== null && !detailView.classList.contains('hidden')) renderWords();
+            });
+            document.addEventListener('click', event => {
+                if (!event.target.closest('.settings-menu') && !languagePanel.hidden) {
+                    languagePanel.hidden = true;
+                    settingsTrigger.setAttribute('aria-expanded', 'false');
+                }
+            });
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape' && !languagePanel.hidden) {
+                    languagePanel.hidden = true;
+                    settingsTrigger.setAttribute('aria-expanded', 'false');
+                    settingsTrigger.focus();
+                }
+            });
+            applyAppLanguage();
+
             let notebooks = JSON.parse(localStorage.getItem('meus-cadernos')) || [
                 {
                     title: "Inglês Básico",
@@ -614,35 +1115,35 @@ document.addEventListener('click', () => {
             const practiceInput = document.getElementById('practiceInput');
 
             const languageOptionsHTML = `
-                <option value="en-US">Inglês 🇬🇧</option>
-                <option value="es-ES">Espanhol 🇪🇸</option>
-                <option value="ja-JP">Japonês 🇯🇵</option>
-                <option value="fr-FR">Francês 🇫🇷</option>
-                <option value="de-DE">Alemão 🇩🇪</option>
+                <option value="en-US">English 🇬🇧</option>
+                <option value="es-ES">Español 🇪🇸</option>
+                <option value="ja-JP">日本語 🇯🇵</option>
+                <option value="fr-FR">Français 🇫🇷</option>
+                <option value="de-DE">Deutsch 🇩🇪</option>
                 <option value="it-IT">Italiano 🇮🇹</option>
-                <option value="ko-KR">Coreano 🇰🇷</option>
-                <option value="zh-CN">Chinês 🇨🇳</option>
+                <option value="ko-KR">한국어 🇰🇷</option>
+                <option value="zh-CN">中文 🇨🇳</option>
                 <option value="pt-PT">Português 🇵🇹</option>
-                <option value="ru-RU">Russo 🇷🇺</option>
-                <option value="ar-SA">Árabe 🇸🇦</option>
-                <option value="hi-IN">Hindi 🇮🇳</option>
-                <option value="tr-TR">Turco 🇹🇷</option>
-                <option value="nl-NL">Holandês 🇳🇱</option>
-                <option value="pl-PL">Polonês 🇵🇱</option>
-                <option value="sv-SE">Sueco 🇸🇪</option>
-                <option value="no-NO">Norueguês 🇳🇴</option>
-                <option value="da-DK">Dinamarquês 🇩🇰</option>
-                <option value="fi-FI">Finlandês 🇫🇮</option>
-                <option value="el-GR">Grego 🇬🇷</option>
-                <option value="he-IL">Hebraico 🇮🇱</option>
-                <option value="th-TH">Tailandês 🇹🇭</option>
-                <option value="vi-VN">Vietnamita 🇻🇳</option>
-                <option value="id-ID">Indonésio 🇮🇩</option>
-                <option value="cs-CZ">Tcheco 🇨🇿</option>
-                <option value="hu-HU">Húngaro 🇭🇺</option>
-                <option value="ro-RO">Romeno 🇷🇴</option>
-                <option value="uk-UA">Ucraniano 🇺🇦</option>
-                <option value="la">Latim 🇻🇦</option>
+                <option value="ru-RU">Русский 🇷🇺</option>
+                <option value="ar-SA">العربية 🇸🇦</option>
+                <option value="hi-IN">हिन्दी 🇮🇳</option>
+                <option value="tr-TR">Türkçe 🇹🇷</option>
+                <option value="nl-NL">Nederlands 🇳🇱</option>
+                <option value="pl-PL">Polski 🇵🇱</option>
+                <option value="sv-SE">Svenska 🇸🇪</option>
+                <option value="no-NO">Norsk 🇳🇴</option>
+                <option value="da-DK">Dansk 🇩🇰</option>
+                <option value="fi-FI">Suomi 🇫🇮</option>
+                <option value="el-GR">Ελληνικά 🇬🇷</option>
+                <option value="he-IL">עברית 🇮🇱</option>
+                <option value="th-TH">ไทย 🇹🇭</option>
+                <option value="vi-VN">Tiếng Việt 🇻🇳</option>
+                <option value="id-ID">Bahasa Indonesia 🇮🇩</option>
+                <option value="cs-CZ">Čeština 🇨🇿</option>
+                <option value="hu-HU">Magyar 🇭🇺</option>
+                <option value="ro-RO">Română 🇷🇴</option>
+                <option value="uk-UA">Українська 🇺🇦</option>
+                <option value="la">Latina 🇻🇦</option>
                 <option value="eo">Esperanto 🟢</option>
             `;
 
@@ -696,7 +1197,7 @@ document.addEventListener('click', () => {
             function renderNotebooks() {
                 listEl.innerHTML = '';
                 if (notebooks.length === 0) {
-                    listEl.innerHTML = `<div class="empty-state">Nenhum caderno criado. Comece clicando em "+ Novo Caderno"!</div>`;
+                    listEl.innerHTML = `<div class="empty-state">${t('emptyNotebooks')}</div>`;
                     return;
                 }
                 notebooks.forEach((nb, idx) => {
@@ -711,12 +1212,12 @@ document.addEventListener('click', () => {
                                 <img src="${getFlagImgUrl(nb.lang)}" style="width: 44px; height: 32px; object-fit: cover; border-radius: 6px; border: 1.5px solid #334155;">
                                 <div style="flex: 1;">
                                     <h3>${nb.title}</h3>
-                                    <p>${total} palavras</p>
+                                    <p>${total} ${t('words')}</p>
                                 </div>
                             </div>
                             <div class="game-progress-container">
                                 <div class="game-progress-info">
-                                    <span>CONCLUÍDO</span>
+                                    <span>${t('completed')}</span>
                                     <span>${pct}%</span>
                                 </div>
                                 <div class="game-progress-bar">
@@ -725,8 +1226,8 @@ document.addEventListener('click', () => {
                             </div>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 4px; margin-left: 10px;">
-                            <button class="action-icon-btn" onclick="event.stopPropagation(); window.editNotebook(${idx})" title="Editar Caderno">✏️</button>
-                            <button class="action-icon-btn delete-btn" onclick="event.stopPropagation(); window.confirmDeleteNb(${idx})" title="Excluir Caderno">🗑️</button>
+                            <button class="action-icon-btn" onclick="event.stopPropagation(); window.editNotebook(${idx})" title="${t('editNotebook')}">✏️</button>
+                            <button class="action-icon-btn delete-btn" onclick="event.stopPropagation(); window.confirmDeleteNb(${idx})" title="${t('deleteNotebook')}">🗑️</button>
                         </div>
                     `;
                     listEl.appendChild(card);
@@ -750,9 +1251,9 @@ document.addEventListener('click', () => {
 
             window.editNotebook = (idx) => {
                 const nb = notebooks[idx];
-                document.getElementById('modalTitle').textContent = 'Editar Caderno';
+                document.getElementById('modalTitle').textContent = t('editNotebook');
                 document.getElementById('modalInputs').innerHTML = `
-                    <input type="text" id="edit_nb_title" value="${nb.title}" placeholder="Nome do Caderno">
+                    <input type="text" id="edit_nb_title" value="${nb.title}" placeholder="${t('notebookName')}">
                     <select id="edit_nb_lang">
                         ${languageOptionsHTML}
                     </select>
@@ -774,8 +1275,11 @@ document.addEventListener('click', () => {
             };
 
             window.confirmDeleteNb = (idx) => {
-                document.getElementById('modalTitle').textContent = 'Excluir Caderno?';
-                document.getElementById('modalInputs').innerHTML = `<p style="line-height: 1.5;">Tem certeza de que deseja excluir o caderno "<strong>${notebooks[idx].title}</strong>" e todas as suas palavras? Esta ação não pode ser desfeita.</p>`;
+                document.getElementById('modalTitle').textContent = t('deleteNotebookQuestion');
+                const confirmation = document.createElement('p');
+                confirmation.style.lineHeight = '1.5';
+                confirmation.textContent = t('deleteNotebookText', { name: notebooks[idx].title });
+                document.getElementById('modalInputs').replaceChildren(confirmation);
                 document.getElementById('modalConfirmBtn').onclick = () => {
                     notebooks.splice(idx, 1);
                     modal.classList.add('hidden');
@@ -791,7 +1295,7 @@ document.addEventListener('click', () => {
                 const currentNb = notebooks[currentIndex];
                 
                 if (currentNb.words.length === 0) {
-                    list.innerHTML = `<div class="empty-state">Este caderno está vazio.<br>Clique em "+ Nova Palavra" para começar!</div>`;
+                    list.innerHTML = `<div class="empty-state">${t('emptyNotebook')}<br>${t('emptyNotebookHint')}</div>`;
                     return;
                 }
 
@@ -799,21 +1303,19 @@ document.addEventListener('click', () => {
                     const div = document.createElement('div');
                     div.className = 'word-card' + (w.mastered ? ' mastered' : '');
                     div.innerHTML = `
-                        <div style="flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                            <div>
-                                <div style="font-weight:700; font-size: 1.25rem; display: flex; align-items: center; gap: 8px; text-align: left;">
+                        <div class="word-card-content">
+                            <div class="word-native" style="font-weight:700; font-size: 1.25rem; text-align: left;">
                                     ${w.native} 
                                     ${w.mastered ? '<span class="mastered-badge"></span>' : ''}
-                                </div>
-                                <div style="color:orange; font-size: 1.1rem; margin-top: 2px; text-align: left;">${w.translation}</div>
                             </div>
+                            <div class="word-translation">${w.translation}</div>
                         </div>
                         <div class="word-actions" style="display: flex; align-items: center; gap: 8px;">
-                            <button class="word-audio-btn" onpointerdown="window.preloadSpeak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" onclick="event.preventDefault(); event.stopPropagation(); window.speak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" aria-label="Ouvir palavra" title="Ouvir">🔊</button>
-                            <button class="word-menu-toggle" onclick="event.preventDefault(); event.stopPropagation(); window.toggleWordMenu(${wIdx});" aria-label="Mais opções">⋯</button>
+                            <button class="word-audio-btn" onpointerdown="window.preloadSpeak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" onclick="event.preventDefault(); event.stopPropagation(); window.speak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" aria-label="${t('listenWord')}" title="${t('listen')}">🔊</button>
+                            <button class="word-menu-toggle" onclick="event.preventDefault(); event.stopPropagation(); window.toggleWordMenu(${wIdx});" aria-label="${t('moreOptions')}">⋯</button>
                             <div class="word-menu-panel hidden" data-index="${wIdx}" onclick="event.stopPropagation()">
-                                <button class="action-icon-btn" onclick="event.preventDefault(); event.stopPropagation(); window.editWord(${wIdx})" title="Editar">✏️ Editar</button>
-                                <button class="action-icon-btn delete-btn" onclick="event.preventDefault(); event.stopPropagation(); window.delWord(${wIdx})" title="Excluir">🗑️ Excluir</button>
+                                <button class="action-icon-btn" onclick="event.preventDefault(); event.stopPropagation(); window.editWord(${wIdx})" title="${t('edit')}">✏️ ${t('edit')}</button>
+                                <button class="action-icon-btn delete-btn" onclick="event.preventDefault(); event.stopPropagation(); window.delWord(${wIdx})" title="${t('delete')}">🗑️ ${t('delete')}</button>
                             </div>
                         </div>
                     `;
@@ -850,10 +1352,10 @@ document.addEventListener('click', () => {
 
             window.editWord = (wIdx) => {
                 const w = notebooks[currentIndex].words[wIdx];
-                document.getElementById('modalTitle').textContent = 'Editar Palavra';
+                document.getElementById('modalTitle').textContent = t('editWord');
                 document.getElementById('modalInputs').innerHTML = `
-                    <input type="text" id="edit_w_nat" value="${w.native}" placeholder="Palavra/Frase Original">
-                    <input type="text" id="edit_w_trans" value="${w.translation}" placeholder="Tradução">
+                    <input type="text" id="edit_w_nat" value="${w.native}" placeholder="${t('originalWord')}">
+                    <input type="text" id="edit_w_trans" value="${w.translation}" placeholder="${t('translation')}">
                 `;
                 document.getElementById('modalConfirmBtn').onclick = () => {
                     const n = document.getElementById('edit_w_nat').value.trim();
@@ -870,9 +1372,9 @@ document.addEventListener('click', () => {
             };
 
             document.getElementById('newNotebookBtn').onclick = () => {
-                document.getElementById('modalTitle').textContent = 'Novo Caderno';
+                document.getElementById('modalTitle').textContent = t('newNotebook');
                 document.getElementById('modalInputs').innerHTML = `
-                    <input type="text" id="n_title" placeholder="Nome do Caderno (ex: Japonês para Viagem)">
+                    <input type="text" id="n_title" placeholder="${t('notebookExample')}">
                     <select id="n_lang">
                         ${languageOptionsHTML}
                     </select>
@@ -891,10 +1393,10 @@ document.addEventListener('click', () => {
             };
 
             document.getElementById('addWordBtn').onclick = () => {
-                document.getElementById('modalTitle').textContent = 'Nova Palavra';
+                document.getElementById('modalTitle').textContent = t('newWord');
                 document.getElementById('modalInputs').innerHTML = `
-                    <input type="text" id="w_nat" placeholder="Ex: Good Morning">
-                    <input type="text" id="w_trans" placeholder="Ex: Bom dia">
+                    <input type="text" id="w_nat" placeholder="${t('nativeExample')}">
+                    <input type="text" id="w_trans" placeholder="${t('translationExample')}">
                 `;
                 document.getElementById('modalConfirmBtn').onclick = () => {
                     const n = document.getElementById('w_nat').value.trim();
@@ -910,8 +1412,11 @@ document.addEventListener('click', () => {
             };
 
             document.getElementById('resetProgressBtn').onclick = () => {
-                document.getElementById('modalTitle').textContent = 'Zerar Progresso?';
-                document.getElementById('modalInputs').innerHTML = `<p style="line-height: 1.5;">Quer redefinir o progresso deste caderno? Todas as palavras voltarão a ser marcadas como não aprendidas.</p>`;
+                document.getElementById('modalTitle').textContent = t('resetProgressQuestion');
+                const confirmation = document.createElement('p');
+                confirmation.style.lineHeight = '1.5';
+                confirmation.textContent = t('resetProgressText');
+                document.getElementById('modalInputs').replaceChildren(confirmation);
                 document.getElementById('modalConfirmBtn').onclick = () => {
                     notebooks[currentIndex].words.forEach(w => w.mastered = false);
                     modal.classList.add('hidden');
@@ -1004,7 +1509,7 @@ document.addEventListener('click', () => {
             function triggerSuccess() {
                 const feedback = document.getElementById('practiceFeedback');
                 feedback.textContent = '';
-                feedback.innerHTML = `<img src="imgApp/joia.png" alt="Correto" class="feedback-image">`;
+                feedback.innerHTML = `<img src="imgApp/joia.png" alt="${t('correct')}" class="feedback-image">`;
                 playCoinSound(); 
                 correctAnswers++; 
                 
@@ -1049,7 +1554,10 @@ document.addEventListener('click', () => {
                 practiceInput.disabled = true;
 
                 if (attemptsLeft <= 0) {
-                    feedback.innerHTML = ` <div style="font-size: 3.0rem; color: green; margin-top: 1px; font-family: monospace;"> ${currentTranslation}</div>`;
+                    const answerCard = document.createElement('div');
+                    answerCard.className = 'correct-answer-card';
+                    answerCard.textContent = currentTranslation;
+                    feedback.replaceChildren(answerCard);
                     setTimeout(() => {
                         feedback.innerHTML = `<img src="imgApp/gameOver.png" alt="Game Over" class="feedback-image large">`;
                         playGameOverSound(); 
@@ -1147,10 +1655,10 @@ document.addEventListener('click', () => {
                         feedback.innerHTML = `<img src="imgApp/goodJob.png" alt="Excelente" class="feedback-image xl">`;
                         playLevelUpSound();
                     } else if (percent >= 50) {
-                        feedback.innerHTML = `👍 BOM TRABALHO! 👍<div style="font-size: 3.0rem; color: #3b82f6; margin-top: 4px; font-family: monospace;">Aproveitamento: ${percent}%<br>Pratique mais para gabaritar!</div>`;
+                        feedback.innerHTML = `${t('goodWork')}<div style="font-size: 3.0rem; color: #3b82f6; margin-top: 4px; font-family: monospace;">${t('score')}: ${percent}%<br>${t('practiceMore')}</div>`;
                         playCoinSound();
                     } else {
-                        feedback.innerHTML = `📚 TREINO CONCLUÍDO<div style="font-size: 3.0rem; color: #94a3b8; margin-top: 4px; font-family: monospace;">Aproveitamento: ${percent}%<br>Tente novamente para melhorar!</div>`;
+                        feedback.innerHTML = `${t('trainingComplete')}<div style="font-size: 3.0rem; color: #94a3b8; margin-top: 4px; font-family: monospace;">${t('score')}: ${percent}%<br>${t('tryAgain')}</div>`;
                         playErrorSound();
                     }
                     
