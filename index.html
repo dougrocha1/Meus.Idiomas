@@ -417,20 +417,43 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 15px rgba(0, 255, 85, 0.1); width: 100%; display: flex; flex-direction: column; align-items: center;
         }
         .keyboard-open .practice-container {
+            height: calc(var(--visual-viewport-height, 100vh) - 56px);
             max-height: calc(var(--visual-viewport-height, 100vh) - 56px);
+            overflow: hidden;
+            padding-bottom: 12px;
+        }
+        .practice-scroll-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .keyboard-open .practice-scroll-content {
+            flex: 1 1 auto;
+            min-height: 0;
             overflow-y: auto;
             overscroll-behavior: contain;
+            scrollbar-color: transparent transparent;
+        }
+        .keyboard-open .practice-scroll-content::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+        .practice-footer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .keyboard-open .practice-footer {
+            flex: 0 0 auto;
+            margin-top: 8px;
         }
         .keyboard-open #practiceAttempts {
-            position: sticky;
-            bottom: 68px;
-            z-index: 1;
-            background: #111827;
+            margin-bottom: 0;
         }
         .keyboard-open #practiceQuitBtn {
-            position: sticky;
-            bottom: 0;
-            z-index: 1;
+            margin-top: 8px !important;
         }
 
         .practice-word-wrapper {
@@ -580,20 +603,23 @@
         <!-- ÁREA DE TREINO / PRÁTICA tradução -->
         <section id="practiceSection" class="hidden">
             <div class="practice-container">
-                <div class="practice-word-wrapper" style="display:flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
-                    <h2 id="practiceNative" style="font-size: 1.8rem; color: #f9f9f9;"></h2> 
-                    <button id="practiceAudioBtn" class="audio-btn" data-i18n-title="listenPronunciation" title="Ouvir pronúncia">🔊</button>
-                </div>
+                <div class="practice-scroll-content">
+                    <div class="practice-word-wrapper" style="display:flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
+                        <h2 id="practiceNative" style="font-size: 1.8rem; color: #f9f9f9;"></h2>
+                        <button id="practiceAudioBtn" class="audio-btn" data-i18n-title="listenPronunciation" title="Ouvir pronúncia">🔊</button>
+                    </div>
                 
-                <div class="practice-input-group" style="display: flex; gap: 8px; width: 100%; margin-bottom: 12px; flex-direction: column;">
-                    <input type="text" id="practiceInput" data-i18n-placeholder="yourTranslation" placeholder="Sua tradução..." autocomplete="off" style="width: 100%; padding: 16px; border-radius: 16px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 1.1rem; text-align: center;">
-                </div>
+                    <div class="practice-input-group" style="display: flex; gap: 8px; width: 100%; margin-bottom: 12px; flex-direction: column;">
+                        <input type="text" id="practiceInput" data-i18n-placeholder="yourTranslation" placeholder="Sua tradução..." autocomplete="off" style="width: 100%; padding: 16px; border-radius: 16px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 1.1rem; text-align: center;">
+                    </div>
 
-                <p id="practiceNotes" style="color: #94a3b8; margin-bottom: 12px; font-style: italic;"></p>
-                <p id="practiceFeedback"></p>
-                <p id="practiceAttempts" style="color: #f87171; font-weight: bold;"></p>
-                
-                <button id="practiceQuitBtn" class="btn secondary" style="margin-top: 20px; width: 100%;" data-i18n="quitPractice">Sair do Treino</button>
+                    <p id="practiceNotes" style="color: #94a3b8; margin-bottom: 12px; font-style: italic;"></p>
+                    <p id="practiceFeedback"></p>
+                </div>
+                <div class="practice-footer">
+                    <p id="practiceAttempts" style="color: #f87171; font-weight: bold;"></p>
+                    <button id="practiceQuitBtn" class="btn secondary" style="margin-top: 20px; width: 100%;" data-i18n="quitPractice">Sair do Treino</button>
+                </div>
             </div>
         </section>
 
