@@ -425,9 +425,9 @@
         #practiceSection.keyboard-open {
             position: fixed;
             top: calc(var(--visual-viewport-offset-top, 0px) + 8px);
-            left: 50%;
+            left: var(--visual-viewport-center-x, 50%);
             z-index: 1000;
-            width: min(416px, calc(100vw - 38px));
+            width: min(416px, calc(var(--visual-viewport-width, 100vw) - 38px));
             height: calc(var(--visual-viewport-height, 100vh) - 16px);
             transform: translateX(-50%);
         }
@@ -480,6 +480,7 @@
         .practice-input-group {
             min-width: 0;
             max-width: 100%;
+            align-self: stretch;
         }
         #practiceInput {
             display: block;
@@ -487,8 +488,7 @@
             width: 100%;
             min-width: 0;
             max-width: 100%;
-            flex: 1 1 100%;
-            font-size: 16px !important;
+            flex: 0 0 auto;
         }
         #practiceNative {
             min-width: 0;
@@ -1212,9 +1212,14 @@ document.addEventListener('click', () => {
                     appContainer?.classList.add('practice-keyboard-layout');
                     practiceView.style.setProperty('--visual-viewport-height', `${practiceVisualViewport.height}px`);
                     practiceView.style.setProperty('--visual-viewport-offset-top', `${practiceVisualViewport.offsetTop}px`);
+                    practiceView.style.setProperty('--visual-viewport-width', `${practiceVisualViewport.width}px`);
+                    practiceView.style.setProperty('--visual-viewport-center-x', `${practiceVisualViewport.offsetLeft + practiceVisualViewport.width / 2}px`);
                 } else {
+                    appContainer?.classList.remove('practice-keyboard-layout');
                     practiceView.style.removeProperty('--visual-viewport-height');
                     practiceView.style.removeProperty('--visual-viewport-offset-top');
+                    practiceView.style.removeProperty('--visual-viewport-width');
+                    practiceView.style.removeProperty('--visual-viewport-center-x');
                 }
             }
 
