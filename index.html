@@ -80,6 +80,9 @@
             transition: none;
             will-change: auto;
         }
+        .app-container.practice-animation-complete {
+            animation: none;
+        }
 
         .settings-menu {
             position: absolute;
@@ -422,7 +425,7 @@
         }
 
         .practice-container {
-            background: #111827; padding: 24px; border-radius: 24px; text-align: center; border: 3px solid #00ff55;
+            background: #111827; padding: 24px 8px; border-radius: 24px; text-align: center; border: 3px solid #00ff55;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 15px rgba(0, 255, 85, 0.1); width: 100%; display: flex; flex-direction: column; align-items: center;
         }
         #practiceSection.keyboard-open {
@@ -538,9 +541,6 @@
             display: block;
             margin: 0 auto 1px;
             border-radius: 10px;
-            opacity: 0;
-            transform: scale(0.85);
-            animation: feedbackFadeIn 0.35s ease forwards;
         }
 
         .feedback-image.large {
@@ -549,17 +549,6 @@
 
         .feedback-image.xl {
             max-width: 150px;
-        }
-
-        @keyframes feedbackFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.10);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
         }
 
         .empty-state {
@@ -1214,6 +1203,7 @@ document.addEventListener('click', () => {
 
                 practiceView.classList.toggle('keyboard-open', Boolean(keyboardOpen));
                 if (keyboardOpen) {
+                    appContainer?.classList.add('practice-animation-complete');
                     appContainer?.classList.add('practice-keyboard-layout');
                     practiceView.style.setProperty('--visual-viewport-height', `${practiceVisualViewport.height}px`);
                     practiceView.style.setProperty('--visual-viewport-offset-top', `${practiceVisualViewport.offsetTop}px`);
