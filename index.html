@@ -478,9 +478,11 @@
             min-width: 0;
         }
         .practice-input-group {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            width: 100%;
             min-width: 0;
             max-width: 100%;
-            align-self: stretch;
         }
         #practiceInput {
             display: block;
@@ -488,7 +490,7 @@
             width: 100%;
             min-width: 0;
             max-width: 100%;
-            flex: 0 0 auto;
+            font-size: 1.1rem;
         }
         #practiceNative {
             min-width: 0;
@@ -639,8 +641,8 @@
                         <button id="practiceAudioBtn" class="audio-btn" data-i18n-title="listenPronunciation" title="Ouvir pronúncia">🔊</button>
                     </div>
                 
-                    <div class="practice-input-group" style="display: flex; gap: 8px; width: 100%; margin-bottom: 12px; flex-direction: column;">
-                        <input type="text" id="practiceInput" data-i18n-placeholder="yourTranslation" placeholder="Sua tradução..." autocomplete="off" style="width: 100%; padding: 16px; border-radius: 16px; border: 2px solid #334155; background: #0f172a; color: white; font-size: 1.1rem; text-align: center;">
+                    <div class="practice-input-group" style="margin-bottom: 12px;">
+                        <input type="text" id="practiceInput" data-i18n-placeholder="yourTranslation" placeholder="Sua tradução..." autocomplete="off" style="padding: 16px; border-radius: 16px; border: 2px solid #334155; background: #0f172a; color: white; text-align: center;">
                     </div>
 
                     <p id="practiceNotes" style="color: #94a3b8; margin-bottom: 12px; font-style: italic;"></p>
