@@ -85,10 +85,10 @@
         }
 
         .settings-menu {
-            position: relative;
+            position: absolute;
+            top: 12px;
+            right: 12px;
             z-index: 100;
-            flex: 0 0 auto;
-            margin-left: 0;
         }
         .settings-trigger {
             width: 44px;
@@ -174,6 +174,10 @@
                 padding: 14px;
                 border-radius: 20px;
             }
+            .settings-menu {
+                top: 10px;
+                right: 10px;
+            }
             #mainContainer > .actions,
             .detail-actions {
                 grid-template-columns: 1fr !important;
@@ -195,31 +199,6 @@
             text-transform: uppercase;
             line-height: 1.4;
         }
-        .app-title-row {
-            display: grid;
-            grid-template-columns: 44px auto 44px;
-            align-items: center;
-            width: fit-content;
-            max-width: 100%;
-            margin: 0 auto;
-        }
-        .app-title-row h1 {
-            grid-column: 2;
-            min-width: 0;
-            text-align: center;
-            white-space: nowrap;
-        }
-        .app-title-row .settings-menu {
-            grid-column: 3;
-            justify-self: start;
-        }
-
-        @media (max-width: 380px) {
-            .app-title-row h1 {
-                font-size: clamp(1rem, 5.5vw, 1.3rem);
-            }
-        }
-
         .app-header h2 { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 0.95rem; 
@@ -610,36 +589,34 @@
 <body>
 
     <div class="app-container">
+        <div class="settings-menu">
+            <button type="button" class="settings-trigger" id="settingsTrigger"
+                    aria-label="Idioma do app" aria-expanded="false" aria-controls="languagePanel"
+                    title="Idioma do app">⋮</button>
+            <div class="settings-panel" id="languagePanel" role="menu" hidden>
+                <p id="languageMenuTitle">Idioma do app</p>
+                <button type="button" class="settings-item" data-app-language="pt" role="menuitemradio">🇧🇷 Português</button>
+                <button type="button" class="settings-item" data-app-language="en" role="menuitemradio">🇺🇸 English</button>
+                <button type="button" class="settings-item" data-app-language="es" role="menuitemradio">🇪🇸 Español</button>
+                <button type="button" class="settings-item" data-app-language="zh" role="menuitemradio">🇨🇳 中文</button>
+                <button type="button" class="settings-item" data-app-language="hi" role="menuitemradio">🇮🇳 हिन्दी</button>
+                <button type="button" class="settings-item" data-app-language="ar" role="menuitemradio">🇸🇦 العربية</button>
+                <button type="button" class="settings-item" data-app-language="bn" role="menuitemradio">🇧🇩 বাংলা</button>
+                <button type="button" class="settings-item" data-app-language="ru" role="menuitemradio">🇷🇺 Русский</button>
+                <button type="button" class="settings-item" data-app-language="fr" role="menuitemradio">🇫🇷 Français</button>
+                <button type="button" class="settings-item" data-app-language="id" role="menuitemradio">🇮🇩 Bahasa Indonesia</button>
+                <button type="button" class="settings-item" data-app-language="ur" role="menuitemradio">🇵🇰 اردو</button>
+                <button type="button" class="settings-item" data-app-language="de" role="menuitemradio">🇩🇪 Deutsch</button>
+                <button type="button" class="settings-item" data-app-language="ja" role="menuitemradio">🇯🇵 日本語</button>
+                <button type="button" class="settings-item" data-app-language="ko" role="menuitemradio">🇰🇷 한국어</button>
+            </div>
+        </div>
         <!-- HEADER -->
         <header class="app-header">
 
             <h2>Developed by DougX</h2>
 
-            <div class="app-title-row">
-                <h1 data-i18n="appTitle">Meus Idiomas</h1>
-                <div class="settings-menu">
-                    <button type="button" class="settings-trigger" id="settingsTrigger"
-                            aria-label="Idioma do app" aria-expanded="false" aria-controls="languagePanel"
-                            title="Idioma do app">⋮</button>
-                    <div class="settings-panel" id="languagePanel" role="menu" hidden>
-                        <p id="languageMenuTitle">Idioma do app</p>
-                        <button type="button" class="settings-item" data-app-language="pt" role="menuitemradio">🇧🇷 Português</button>
-                        <button type="button" class="settings-item" data-app-language="en" role="menuitemradio">🇺🇸 English</button>
-                        <button type="button" class="settings-item" data-app-language="es" role="menuitemradio">🇪🇸 Español</button>
-                        <button type="button" class="settings-item" data-app-language="zh" role="menuitemradio">🇨🇳 中文</button>
-                        <button type="button" class="settings-item" data-app-language="hi" role="menuitemradio">🇮🇳 हिन्दी</button>
-                        <button type="button" class="settings-item" data-app-language="ar" role="menuitemradio">🇸🇦 العربية</button>
-                        <button type="button" class="settings-item" data-app-language="bn" role="menuitemradio">🇧🇩 বাংলা</button>
-                        <button type="button" class="settings-item" data-app-language="ru" role="menuitemradio">🇷🇺 Русский</button>
-                        <button type="button" class="settings-item" data-app-language="fr" role="menuitemradio">🇫🇷 Français</button>
-                        <button type="button" class="settings-item" data-app-language="id" role="menuitemradio">🇮🇩 Bahasa Indonesia</button>
-                        <button type="button" class="settings-item" data-app-language="ur" role="menuitemradio">🇵🇰 اردو</button>
-                        <button type="button" class="settings-item" data-app-language="de" role="menuitemradio">🇩🇪 Deutsch</button>
-                        <button type="button" class="settings-item" data-app-language="ja" role="menuitemradio">🇯🇵 日本語</button>
-                        <button type="button" class="settings-item" data-app-language="ko" role="menuitemradio">🇰🇷 한국어</button>
-                    </div>
-                </div>
-            </div>
+            <h1 data-i18n="appTitle">Meus Idiomas</h1>
 
         </header>
         <main id="mainContainer">
