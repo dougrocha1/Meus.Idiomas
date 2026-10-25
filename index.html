@@ -197,18 +197,27 @@
         }
         .app-title-row {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            grid-template-columns: 44px auto 44px;
             align-items: center;
+            width: fit-content;
+            max-width: 100%;
+            margin: 0 auto;
         }
         .app-title-row h1 {
             grid-column: 2;
             min-width: 0;
             text-align: center;
+            white-space: nowrap;
         }
         .app-title-row .settings-menu {
             grid-column: 3;
             justify-self: start;
-            margin-left: 10px;
+        }
+
+        @media (max-width: 380px) {
+            .app-title-row h1 {
+                font-size: clamp(1rem, 5.5vw, 1.3rem);
+            }
         }
 
         .app-header h2 { 
