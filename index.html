@@ -1603,6 +1603,7 @@ document.addEventListener('click', () => {
 
             function updateHeartsUI() {
                 const attemptsContainer = document.getElementById('practiceAttempts');
+                attemptsContainer.classList.remove('hidden');
                 let hearts = '';
                 const maxHearts = 3;
 
@@ -1834,6 +1835,7 @@ document.addEventListener('click', () => {
                     const percent = Math.round((correctAnswers / activePracticeWords.length) * 100);
 
                     if (percent === 100) {
+                        document.getElementById('practiceAttempts').classList.add('hidden');
                         feedback.innerHTML = `<img src="imgApp/goodJob.png" alt="Excelente" class="feedback-image xl">`;
                         playLevelUpSound();
                     } else if (percent >= 50) {
