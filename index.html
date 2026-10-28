@@ -1,46 +1,43 @@
-﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Meus Idiomas - Organização de Idiomas</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link class="js-apple-touch-icon" rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3176/3176294.png">
-    
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Scrollbar Personalizada e Retro para PC */
-        ::-webkit-scrollbar {
-            width: 8px;
+        /* Ocultar barras de scroll em todos os elementos mantendo a rolagem */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-        ::-webkit-scrollbar-track {
-            background: #090d16;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-            border: 2px solid #090d16;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00ff55;
-            box-shadow: 0 0 8px #00ff55;
+        *::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(180deg, #090d16 0%, #111026 100%);
-            background-attachment: fixed; 
+            background-attachment: fixed;
             color: #f8fafc;
-            padding: 16px;
+            padding: 8px;
+            padding-top: 44px;
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            min-height: 100vh;
+            min-height: 100%;
+            overflow-x: hidden;
         }
 
         @keyframes appFadeIn {
@@ -55,25 +52,33 @@
         }
 
         .app-container {
-            --app-content-padding: 16px;
             width: 100%;
             max-width: 480px;
             margin: 0 auto;
+            margin-bottom: 30px;
             position: relative;
             padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            transition: all 0.3s ease;
-            animation: appFadeIn 1.7s ease both;
-            will-change: opacity, transform;
+            box-sizing: border-box;
+            overflow-x: hidden;
             border: 3px solid #00ff55;
             border-radius: 24px;
             background: #0d1220;
             box-shadow:
                 0 25px 60px rgba(0, 0, 0, 0.8),
                 0 0 30px rgba(0, 255, 85, 0.15);
+            transition: all 0.3s ease;
+            animation: appFadeIn 1.7s ease both;
+            will-change: opacity, transform;
         }
+        .app-container * {
+            box-sizing: border-box;
+            max-width: 100%;
+            min-width: 0;
+        }
+
         .app-container.practice-keyboard-layout {
             animation: none;
             transform: none;
@@ -86,20 +91,33 @@
 
         .settings-menu {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            z-index: 100;
+            top: 10px;
+            right: 10px;
+            z-index: 999;
         }
         .settings-trigger {
-            width: 44px;
-            height: 44px;
-            border: 1.5px solid #334155;
-            border-radius: 12px;
+            width: 48px;
+            height: 48px;
+            border: 2px solid #334155;
+            border-radius: 14px;
             background: #111827;
             color: #00ff55;
             font-size: 1.6rem;
-            line-height: 1;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transform: translateY(-2px);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .settings-trigger::after {
+            content: '';
+            position: absolute;
+            top: -16px;
+            bottom: -16px;
+            left: -16px;
+            right: -16px;
         }
         .settings-trigger:hover,
         .settings-trigger:focus-visible {
@@ -108,12 +126,13 @@
         }
         .settings-panel {
             position: absolute;
-            top: 50px;
+            top: 54px;
             right: 0;
-            width: min(250px, calc(100vw - 48px));
+            width: 240px;
+            max-width: calc(100vw - 32px);
             max-height: min(65vh, 420px);
             overflow-y: auto;
-            padding: 8px;
+            padding: 10px;
             border: 1.5px solid #334155;
             border-radius: 14px;
             background: #0f172a;
@@ -184,25 +203,25 @@
             }
         }
 
-        .app-header { 
-            text-align: center; 
+        .app-header {
+            text-align: center;
             padding-top: 32px;
-            margin-top: 15px; 
-            margin-bottom: 5px; 
+            margin-top: 15px;
+            margin-bottom: 5px;
         }
-        .app-header h1 { 
+        .app-header h1 {
             font-family: 'Press Start 2P', cursive;
-            font-size: 1.65rem; 
-            color: #00ff55; 
+            font-size: 1.65rem;
+            color: #00ff55;
             text-shadow: 0 0 15px rgba(0, 255, 85, 0.7), 0 0 5px rgba(0, 255, 85, 0.4);
             letter-spacing: 1px;
             text-transform: uppercase;
             line-height: 1.4;
         }
-        .app-header h2 { 
+        .app-header h2 {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.95rem; 
-            color: #00ff55; 
+            font-size: 0.95rem;
+            color: #00ff55;
             text-shadow: 0 0 15px rgba(0, 255, 85, 0.7), 0 0 5px rgba(0, 255, 85, 0.4);
             letter-spacing: 1px;
             line-height: 1.4;
@@ -225,8 +244,8 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-            
-            
+
+
         .btn:active { transform: scale(0.96); opacity: 0.9; }
         .primary { background-color: #1f4581; color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); }
         .primary:hover { background-color: #162f64; }
@@ -235,7 +254,7 @@
         .success { background-color: #23531e; color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
         .success:hover { background-color: #183715; }
         .danger { background-color: #ef4444; color: white; }
-        
+
         .action-btn-kryptonite {
             background: #121b2d;
             color: #00ff55;
@@ -253,7 +272,7 @@
             text-shadow: 0 0 6px rgba(163, 255, 0, 0.6);
         }
         /* alto falante na hora de praticar tudo */
-        .audio-btn { 
+        .audio-btn {
             background: #334155; color: white; border: none; padding: 12px; border-radius: 14px; cursor: pointer; font-size: 1.3rem;
             display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.1s;
         }
@@ -268,7 +287,7 @@
         }
 
         .notebook-card:hover { border-color: #00ff55; box-shadow: 0 4px 15px rgba(0, 255, 85, 0.15); }
-        
+
         .card-content { display: flex; align-items: center; gap: 16px; flex: 1; }
         .notebook-card h3 { color: #f1f5f9; font-size: 1.15rem; font-weight: 700; text-align: left; }
         .notebook-card p { color: #94a3b8; font-size: 0.85rem; margin-top: 3px; text-align: left; }
@@ -431,10 +450,10 @@
             border: 3px solid #00ff55;
             width: 100%;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 15px rgba(21, 182, 75, 0.624);
-             display: flex; 
-             flex-direction: column; 
+             display: flex;
+             flex-direction: column;
              align-items: center;
-             
+
         }
         .app-container > #practiceSection {
             width: calc(100% + 12px);
@@ -492,7 +511,7 @@
         }
         .keyboard-open #practiceQuitBtn {
             margin-top: 8px !important;
-            
+
 
 
         }
@@ -526,7 +545,7 @@
         #practiceInput {
             display: block;
             box-sizing: border-box;
-            width: min(100%, 370px);
+            width: 100%;
             min-width: 0;
             max-width: 370px;
             margin-inline: auto;
@@ -592,8 +611,8 @@
             border-radius: 18px;
             background: rgba(30, 41, 59, 0.1);
         }
-        
-        
+
+
     </style>
 </head>
 <body>
@@ -646,12 +665,12 @@
                     <button id="resetProgressBtn" class="action-icon-btn" style="color: #94a3b8; font-size: 1.15rem; padding: 4px;" data-i18n-title="resetProgress" title="Zerar Progresso">🔄</button>
                 </div>
             </header>
-            
+
             <div class="detail-actions" style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <button id="addWordBtn" class="btn primary" style="border: 2px solid #ffffff; font-size: 1.35rem;" data-i18n="newWord">+ Nova Palavra</button>
                 <button id="detailPracticeBtn" class="btn success" style="border: 2px solid #fdfdfd; font-size: 1.35rem;" data-i18n="detailPractice">Praticar</button>
             </div>
-            
+
             <div id="wordList" class="word-list"></div>
         </section>
 
@@ -659,11 +678,11 @@
         <section id="practiceSection" class="hidden">
             <div class="practice-container">
                 <div class="practice-scroll-content">
-                    <div class="practice-word-wrapper">
+                    <div class="practice-word-wrapper" style="display:flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
                         <button id="practiceAudioBtn" class="audio-btn" data-i18n-title="listenPronunciation" title="Ouvir pronúncia">🔊</button>
-                        <h2 id="practiceNative"></h2>
+                        <h2 id="practiceNative" style="font-size: 1.8rem; color: #f9f9f9; text-align: center;"></h2>
                     </div>
-                
+
                     <div class="practice-input-group" style="margin-bottom: 12px;">
                         <textarea id="practiceInput" rows="1" data-i18n-placeholder="yourTranslation" placeholder="Sua tradução..." autocomplete="off" style="padding: 16px; border-radius: 16px; border: 2px solid #334155; background: #0f172a; color: white; text-align: center; width:90%; resize: none; overflow-y: hidden;"></textarea>
                     </div>
@@ -751,7 +770,7 @@
                     deleteNotebook: 'Eliminar cuaderno', deleteNotebookQuestion: '¿Eliminar cuaderno?',
                     deleteNotebookText: '¿Seguro que quieres eliminar el cuaderno "{name}" y todas sus palabras? Esta acción no se puede deshacer.',
                     emptyNotebook: 'Este cuaderno está vacío.', emptyNotebookHint: '¡Haz clic en "+ Nueva palabra" para empezar!',
-                    listenWord: 'Escuchar palabra', moreOptions: 'Más opciones', listen: 'Escuchar', edit: 'Editar',
+                    listenWord: 'Escuchar palabra', moreOptions: 'Más opções', listen: 'Escuchar', edit: 'Editar',
                     delete: 'Eliminar', editWord: 'Editar palabra', originalWord: 'Palabra/frase original',
                     translation: 'Traducción', notebookName: 'Nombre del cuaderno',
                     notebookExample: 'Nombre del cuaderno (ej.: Japonés para viajar)',
@@ -829,7 +848,7 @@
                     confirm: 'নিশ্চিত করুন', emptyNotebooks: 'এখনও কোনো খাতা নেই। শুরু করতে "+ নতুন খাতা" চাপুন!',
                     words: 'টি শব্দ', completed: 'সম্পন্ন', editNotebook: 'খাতা সম্পাদনা',
                     deleteNotebook: 'খাতা মুছুন', deleteNotebookQuestion: 'খাতা মুছবেন?',
-                    deleteNotebookText: '"{name}" খাতা ও এর সব শব্দ মুছতে চান? এটি আর ফেরানো যাবে না।',
+                    deleteNotebookText: '"{name}" খাতা ও এর সব শব্দ মুছতে চান? এটি আর ফেরানো যাবে না۔',
                     emptyNotebook: 'এই খাতাটি খালি।', emptyNotebookHint: 'শুরু করতে "+ নতুন শব্দ" চাপুন!',
                     listenWord: 'শব্দ শুনুন', moreOptions: 'আরও বিকল্প', listen: 'শুনুন', edit: 'সম্পাদনা',
                     delete: 'মুছুন', editWord: 'শব্দ সম্পাদনা', originalWord: 'মূল শব্দ/বাক্যাংশ',
@@ -876,7 +895,7 @@
                     translation: 'Traduction', notebookName: 'Nom du carnet',
                     notebookExample: 'Nom du carnet (ex. : Japonais pour voyager)',
                     nativeExample: 'Ex. : Good Morning', translationExample: 'Ex. : Bonjour',
-                    resetProgressQuestion: 'Réinitialiser la progression ?', resetProgressText: 'Réinitialiser la progression de ce carnet ? Tous les mots seront marqués comme non appris.',
+                    resetProgressQuestion: 'Réinitialiser la progression ?', resetProgressText: 'Réinitialiser la progression de ce carnet ? Tous les mots serão marqués comme non appris.',
                     correct: 'Correct', goodWork: '👍 BEAU TRAVAIL ! 👍', score: 'Résultat',
                     practiceMore: 'Pratiquez encore pour obtenir le score parfait !', trainingComplete: '📚 ENTRAÎNEMENT TERMINÉ',
                     tryAgain: 'Réessayez pour vous améliorer !'
@@ -950,7 +969,7 @@
                     words: '語', completed: '完了', editNotebook: 'ノートを編集',
                     deleteNotebook: 'ノートを削除', deleteNotebookQuestion: 'ノートを削除しますか？',
                     deleteNotebookText: '「{name}」とすべての単語を削除しますか？この操作は取り消せません。',
-                    emptyNotebook: 'このノートは空です。', emptyNotebookHint: '「+ 新しい単語」をクリックして始めましょう！',
+                    emptyNotebook: 'このノートは空です。', emptyNotebookHint: '「+ 新しいノート」をクリックして始めましょう！',
                     listenWord: '単語を聞く', moreOptions: 'その他のオプション', listen: '聞く', edit: '編集',
                     delete: '削除', editWord: '単語を編集', originalWord: '元の単語・フレーズ',
                     translation: '翻訳', notebookName: 'ノート名',
@@ -1014,48 +1033,59 @@
                 document.querySelectorAll('[data-i18n-label]').forEach(element => {
                     element.setAttribute('aria-label', t(element.dataset.i18nLabel));
                 });
-                document.getElementById('languageMenuTitle').textContent = t('systemLanguage');
+                const trigger = document.getElementById('settingsTrigger');
+                const menuTitle = document.getElementById('languageMenuTitle');
+                if (menuTitle) menuTitle.textContent = t('systemLanguage');
                 document.querySelectorAll('[data-app-language]').forEach(button => {
                     button.setAttribute('aria-checked', String(button.dataset.appLanguage === appLanguage));
                 });
-                document.getElementById('settingsTrigger').setAttribute('aria-label', t('systemLanguage'));
-                document.getElementById('settingsTrigger').title = t('systemLanguage');
+                if (trigger) {
+                    trigger.setAttribute('aria-label', t('systemLanguage'));
+                    trigger.title = t('systemLanguage');
+                }
             }
 
             const settingsTrigger = document.getElementById('settingsTrigger');
             const languagePanel = document.getElementById('languagePanel');
-            settingsTrigger.addEventListener('click', () => {
-                const isOpen = !languagePanel.hidden;
-                languagePanel.hidden = isOpen;
-                settingsTrigger.setAttribute('aria-expanded', String(!isOpen));
-            });
-            languagePanel.addEventListener('click', event => {
-                const languageButton = event.target.closest('[data-app-language]');
-                if (!languageButton) return;
-                appLanguage = languageButton.dataset.appLanguage;
-                localStorage.setItem('meus-idiomas-ui-language', appLanguage);
-                applyAppLanguage();
-                languagePanel.hidden = true;
-                settingsTrigger.setAttribute('aria-expanded', 'false');
-                renderNotebooks();
-                if (currentIndex !== null && !detailView.classList.contains('hidden')) renderWords();
-            });
-            document.addEventListener('click', event => {
-                if (!event.target.closest('.settings-menu') && !languagePanel.hidden) {
+            if (settingsTrigger && languagePanel) {
+                settingsTrigger.addEventListener('click', () => {
+                    const isOpen = !languagePanel.hidden;
+                    languagePanel.hidden = isOpen;
+                    settingsTrigger.setAttribute('aria-expanded', String(!isOpen));
+                });
+                languagePanel.addEventListener('click', event => {
+                    const languageButton = event.target.closest('[data-app-language]');
+                    if (!languageButton) return;
+                    appLanguage = languageButton.dataset.appLanguage;
+                    localStorage.setItem('meus-idiomas-ui-language', appLanguage);
+                    applyAppLanguage();
                     languagePanel.hidden = true;
                     settingsTrigger.setAttribute('aria-expanded', 'false');
-                }
-            });
-            document.addEventListener('keydown', event => {
-                if (event.key === 'Escape' && !languagePanel.hidden) {
-                    languagePanel.hidden = true;
-                    settingsTrigger.setAttribute('aria-expanded', 'false');
-                    settingsTrigger.focus();
-                }
-            });
+                    renderNotebooks();
+                    if (currentIndex !== null && !detailView.classList.contains('hidden')) renderWords();
+                });
+                document.addEventListener('click', event => {
+                    if (!event.target.closest('.settings-menu') && !languagePanel.hidden) {
+                        languagePanel.hidden = true;
+                        settingsTrigger.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                document.addEventListener('keydown', event => {
+                    if (event.key === 'Escape' && !languagePanel.hidden) {
+                        languagePanel.hidden = true;
+                        settingsTrigger.setAttribute('aria-expanded', 'false');
+                        settingsTrigger.focus();
+                    }
+                });
+            }
             applyAppLanguage();
 
-            let notebooks = JSON.parse(localStorage.getItem('meus-cadernos')) || [
+            let savedNotebooks = null;
+            try {
+                savedNotebooks = JSON.parse(localStorage.getItem('meus-cadernos'));
+            } catch (e) {}
+
+            let notebooks = (Array.isArray(savedNotebooks) && savedNotebooks.length > 0) ? savedNotebooks : [
                 {
                     title: "Inglês Básico",
                     lang: "en-US",
@@ -1068,14 +1098,14 @@
             ];
             let currentIndex = null;
             let pIndex = 0;
-            let attemptsLeft = 3; 
-            let correctAnswers = 0; 
+            let attemptsLeft = 3;
+            let correctAnswers = 0;
             let activePracticeWords = [];
             let practiceSource = 'detail';
             let isTransitioning = false;
             const successImageMs = 1000;
             const successAdvanceMs = 1500;
-        
+
 
             // --- WEB AUDIO API (SYNTHESIZER) ---
             let audioCtx = null;
@@ -1112,14 +1142,14 @@ document.addEventListener('click', () => {
             function playCoinSound() {
                 initAudio();
                 if (!audioCtx) return;
-                
+
                 const now = audioCtx.currentTime;
-                
+
                 const osc1 = audioCtx.createOscillator();
                 const gain1 = audioCtx.createGain();
                 osc1.type = 'square';
                 osc1.frequency.setValueAtTime(987.77, now);
-                gain1.gain.setValueAtTime(0.06, now); 
+                gain1.gain.setValueAtTime(0.06, now);
                 gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
                 osc1.connect(gain1);
                 gain1.connect(audioCtx.destination);
@@ -1146,17 +1176,17 @@ document.addEventListener('click', () => {
                 const now = audioCtx.currentTime;
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                
+
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(140, now);
                 osc.frequency.linearRampToValueAtTime(80, now + 0.25);
-                
+
                 gain.gain.setValueAtTime(0.08, now);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-                
+
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
+
                 osc.start(now);
                 osc.stop(now + 0.25);
             }
@@ -1192,16 +1222,16 @@ document.addEventListener('click', () => {
                 notes.forEach((freq, idx) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
-                    
+
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(freq, now + (idx * 0.08));
-                    
+
                     gain.gain.setValueAtTime(0.06, now + (idx * 0.08));
                     gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.08) + 0.25);
-                    
+
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
-                    
+
                     osc.start(now + (idx * 0.08));
                     osc.stop(now + (idx * 0.08) + 0.25);
                 });
@@ -1227,6 +1257,7 @@ document.addEventListener('click', () => {
             const practiceVisualViewport = window.visualViewport;
 
             function updatePracticeKeyboardLayout() {
+                if (isTransitioning) return;
                 const keyboardOpen = document.activeElement === practiceInput
                     && window.innerWidth <= 767
                     && practiceVisualViewport
@@ -1433,7 +1464,7 @@ document.addEventListener('click', () => {
                 const list = document.getElementById('wordList');
                 list.innerHTML = '';
                 const currentNb = notebooks[currentIndex];
-                
+
                 if (currentNb.words.length === 0) {
                     list.innerHTML = `<div class="empty-state">${t('emptyNotebook')}<br>${t('emptyNotebookHint')}</div>`;
                     return;
@@ -1445,7 +1476,7 @@ document.addEventListener('click', () => {
                     div.innerHTML = `
                         <div class="word-card-content">
                             <div class="word-native" style="font-weight:700; font-size: 1.25rem; text-align: left;">
-                                    ${w.native} 
+                                    ${w.native}
                                     ${w.mastered ? '<span class="mastered-badge"></span>' : ''}
                             </div>
                             <div class="word-translation">${w.translation}</div>
@@ -1573,13 +1604,13 @@ document.addEventListener('click', () => {
             function updateHeartsUI() {
                 const attemptsContainer = document.getElementById('practiceAttempts');
                 let hearts = '';
-                const maxHearts = 3; 
-                
+                const maxHearts = 3;
+
                 for (let i = 0; i < maxHearts; i++) {
                     if (i < attemptsLeft) {
                         hearts += '❤️ ';
                     } else {
-                        hearts += '😢 '; 
+                        hearts += '😢 ';
                     }
                 }
                 attemptsContainer.innerHTML = `<span style="font-size: 2rem; letter-spacing: 2px;" >${hearts.trim()}</span>`;
@@ -1591,8 +1622,8 @@ document.addEventListener('click', () => {
                 activePracticeWords = [...notebooks[currentIndex].words];
                 activePracticeWords.sort(() => Math.random() - 0.5);
                 pIndex = 0;
-                attemptsLeft = 3; 
-                correctAnswers = 0; 
+                attemptsLeft = 3;
+                correctAnswers = 0;
                 practiceSource = 'detail';
                 detailView.classList.add('hidden');
                 practiceView.classList.remove('hidden');
@@ -1612,12 +1643,12 @@ document.addEventListener('click', () => {
                 });
 
                 if (allWords.length === 0) return;
-                
+
                 activePracticeWords = allWords;
                 activePracticeWords.sort(() => Math.random() - 0.5);
                 pIndex = 0;
-                attemptsLeft = 3; 
-                correctAnswers = 0; 
+                attemptsLeft = 3;
+                correctAnswers = 0;
                 practiceSource = 'main';
                 mainView.classList.add('hidden');
                 practiceView.classList.remove('hidden');
@@ -1632,10 +1663,10 @@ document.addEventListener('click', () => {
                 practiceInput.value = '';
                 practiceInput.style.height = 'auto';
                 resizePracticeInput();
-                document.getElementById('practiceFeedback').textContent = ''; 
+                document.getElementById('practiceFeedback').textContent = '';
                 practiceInput.disabled = false;
                 practiceInput.focus();
-                
+
                 let correctLang = (practiceSource === 'main') ? (w.lang || 'en-US') : notebooks[currentIndex].lang;
                 speak(w.native, correctLang);
             }
@@ -1658,10 +1689,10 @@ document.addEventListener('click', () => {
                 const feedback = document.getElementById('practiceFeedback');
                 feedback.textContent = '';
                 feedback.innerHTML = `<img src="imgApp/joia.png" alt="${t('correct')}" class="feedback-image">`;
-                playCoinSound(); 
-                correctAnswers++; 
-                
-                
+                playCoinSound();
+                correctAnswers++;
+
+
                 if (practiceSource === 'detail') {
                     let originalWord = notebooks[currentIndex].words.find(w => w.native === activePracticeWords[pIndex].native && w.translation === activePracticeWords[pIndex].translation);
                     if (originalWord) {
@@ -1675,9 +1706,9 @@ document.addEventListener('click', () => {
                         }
                     });
                 }
-                save(); 
+                save();
 
-                if (attemptsLeft < 3) { 
+                if (attemptsLeft < 3) {
                     attemptsLeft++;
                     updateHeartsUI();
                 }
@@ -1693,8 +1724,8 @@ document.addEventListener('click', () => {
             function triggerFailure() {
                 const feedback = document.getElementById('practiceFeedback');
                 const currentTranslation = activePracticeWords[pIndex].translation;
-                
-                playErrorSound(); 
+
+                playErrorSound();
                 attemptsLeft--;
                 updateHeartsUI();
 
@@ -1708,8 +1739,8 @@ document.addEventListener('click', () => {
                     feedback.replaceChildren(answerCard);
                     setTimeout(() => {
                         feedback.innerHTML = `<img src="imgApp/gameOver.png" alt="Game Over" class="feedback-image large">`;
-                        playGameOverSound(); 
-                        
+                        playGameOverSound();
+
                         setTimeout(() => {
                             practiceView.classList.add('hidden');
                             if (practiceSource === 'detail') {
@@ -1726,7 +1757,7 @@ document.addEventListener('click', () => {
                     setTimeout(() => {
                         feedback.textContent = '';
                         practiceInput.disabled = false;
-                        practiceInput.value = ''; 
+                        practiceInput.value = '';
                         practiceInput.style.height = 'auto';
                         resizePracticeInput();
                         practiceInput.focus();
@@ -1740,10 +1771,10 @@ document.addEventListener('click', () => {
                 if (isTransitioning) return;
                 const inputVal = practiceInput.value.trim();
                 const currentTranslation = activePracticeWords[pIndex].translation.trim();
-                
+
                 const normInput = normalize(inputVal);
                 const normTarget = normalize(currentTranslation);
-                
+
                 if (normInput === normTarget) {
                     triggerSuccess();
                 }
@@ -1799,9 +1830,9 @@ document.addEventListener('click', () => {
                 if (pIndex >= activePracticeWords.length) {
                     const feedback = document.getElementById('practiceFeedback');
                     isTransitioning = true;
-                    
+
                     const percent = Math.round((correctAnswers / activePracticeWords.length) * 100);
-                    
+
                     if (percent === 100) {
                         feedback.innerHTML = `<img src="imgApp/goodJob.png" alt="Excelente" class="feedback-image xl">`;
                         playLevelUpSound();
@@ -1812,7 +1843,7 @@ document.addEventListener('click', () => {
                         feedback.innerHTML = `${t('trainingComplete')}<div style="font-size: 3.0rem; color: #94a3b8; margin-top: 4px; font-family: monospace;">${t('score')}: ${percent}%<br>${t('tryAgain')}</div>`;
                         playErrorSound();
                     }
-                    
+
                     setTimeout(() => {
                         practiceView.classList.add('hidden');
                         if (practiceSource === 'detail') {
@@ -1822,7 +1853,7 @@ document.addEventListener('click', () => {
                             mainView.classList.remove('hidden');
                             renderNotebooks();
                         }
-                    }, 4000); 
+                    }, 4000);
                 } else {
                     nextStep();
                 }
