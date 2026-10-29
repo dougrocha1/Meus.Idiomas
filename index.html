@@ -1103,8 +1103,8 @@
             let activePracticeWords = [];
             let practiceSource = 'detail';
             let isTransitioning = false;
-            const successImageMs = 1000;
-            const successAdvanceMs = 1500;
+            const successImageMs = 1500;
+            const successAdvanceMs = 2000;
 
 
             // --- WEB AUDIO API (SYNTHESIZER) ---
@@ -1603,7 +1603,7 @@ document.addEventListener('click', () => {
 
             function updateHeartsUI() {
                 const attemptsContainer = document.getElementById('practiceAttempts');
-                attemptsContainer.classList.remove('hidden');
+                if (attemptsContainer) attemptsContainer.style.display = 'block';
                 let hearts = '';
                 const maxHearts = 3;
 
@@ -1687,42 +1687,49 @@ document.addEventListener('click', () => {
 
                 // Função para lidar com sucesso na resposta//
             function triggerSuccess() {
-                const feedback = document.getElementById('practiceFeedback');
-                feedback.textContent = '';
-                feedback.innerHTML = `<img src="imgApp/joia.png" alt="${t('correct')}" class="feedback-image">`;
-                playCoinSound();
-                correctAnswers++;
+                isTransitioning = true;
 
+                // Pequena pausa de 0.8s para o usuário ver a palavra digitada completa na tela
+                setTimeout(() => {
+                    const feedback = document.getElementById('practiceFeedback');
+                    feedback.textContent = '';
+                    feedback.innerHTML = `<img src="imgApp/joia.png" alt="${t('correct')}" class="feedback-image">`;
+                    playCoinSound();
+                    correctAnswers++;
 
-                if (practiceSource === 'detail') {
-                    let originalWord = notebooks[currentIndex].words.find(w => w.native === activePracticeWords[pIndex].native && w.translation === activePracticeWords[pIndex].translation);
-                    if (originalWord) {
-                        originalWord.mastered = true;
-                    }
-                } else {
-                    notebooks.forEach(nb => {
-                        let originalWord = nb.words.find(w => w.native === activePracticeWords[pIndex].native && w.translation === activePracticeWords[pIndex].translation);
+                    if (practiceSource === 'detail') {
+                        let originalWord = notebooks[currentIndex].words.find(w => w.native === activePracticeWords[pIndex].native && w.translation === activePracticeWords[pIndex].translation);
                         if (originalWord) {
                             originalWord.mastered = true;
                         }
-                    });
-                }
-                save();
+                    } else {
+                        notebooks.forEach(nb => {
+                            let originalWord = nb.words.find(w => w.native === activePracticeWords[pIndex].native && w.translation === activePracticeWords[pIndex].translation);
+                            if (originalWord) {
+                                originalWord.mastered = true;
+                            }
+                        });
+                    }
+                    save();
 
-                if (attemptsLeft < 3) {
-                    attemptsLeft++;
-                    updateHeartsUI();
-                }
+                    if (attemptsLeft < 3) {
+                        attemptsLeft++;
+                        updateHeartsUI();
+                    }
 
-                isTransitioning = true;
-                practiceInput.disabled = true;
+                    // Mantém o texto digitado visível junto com o "joia.png" e focado para a próxima palavra
+                    practiceInput.focus();
 
-                setTimeout(() => {
-                    advance();
-                }, successImageMs + successAdvanceMs);
+                    // Aguarda os 3.5 segundos (successImageMs + successAdvanceMs) exibindo "joia.png" antes de pular
+                    setTimeout(() => {
+                        advance();
+                    }, successImageMs + successAdvanceMs);
+
+                }, 1200);
             }
                // Função para lidar com falha na resposta//
             function triggerFailure() {
+                isTransitioning = true;
                 const feedback = document.getElementById('practiceFeedback');
                 const currentTranslation = activePracticeWords[pIndex].translation;
 
@@ -1730,10 +1737,8 @@ document.addEventListener('click', () => {
                 attemptsLeft--;
                 updateHeartsUI();
 
-                isTransitioning = true;
-                practiceInput.disabled = true;
-
                 if (attemptsLeft <= 0) {
+                    practiceInput.disabled = true;
                     const answerCard = document.createElement('div');
                     answerCard.className = 'correct-answer-card';
                     answerCard.textContent = currentTranslation;
@@ -1755,15 +1760,15 @@ document.addEventListener('click', () => {
                     }, 4000);
                 } else {
                     feedback.textContent = '❌';
+                    practiceInput.value = '';
+                    practiceInput.style.height = 'auto';
+                    resizePracticeInput();
+                    practiceInput.focus();
+
                     setTimeout(() => {
                         feedback.textContent = '';
-                        practiceInput.disabled = false;
-                        practiceInput.value = '';
-                        practiceInput.style.height = 'auto';
-                        resizePracticeInput();
-                        practiceInput.focus();
                         isTransitioning = false;
-                    }, 1500);
+                    }, 1200);
                 }
             }
 
@@ -1835,8 +1840,9 @@ document.addEventListener('click', () => {
                     const percent = Math.round((correctAnswers / activePracticeWords.length) * 100);
 
                     if (percent === 100) {
-                        document.getElementById('practiceAttempts').classList.add('hidden');
                         feedback.innerHTML = `<img src="imgApp/goodJob.png" alt="Excelente" class="feedback-image xl">`;
+                        const attemptsContainer = document.getElementById('practiceAttempts');
+                        if (attemptsContainer) attemptsContainer.style.display = 'none';
                         playLevelUpSound();
                     } else if (percent >= 50) {
                         feedback.innerHTML = `${t('goodWork')}<div style="font-size: 3.0rem; color: #3b82f6; margin-top: 4px; font-family: monospace;">${t('score')}: ${percent}%<br>${t('practiceMore')}</div>`;
