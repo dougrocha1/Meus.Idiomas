@@ -63,6 +63,7 @@
             gap: 20px;
             box-sizing: border-box;
             overflow-x: hidden;
+            overflow-y: visible;
             border: 3px solid #00ff55;
             border-radius: 24px;
             background: #0d1220;
@@ -344,6 +345,7 @@
             position: relative;
             width: 100%;
             min-width: 0;
+            overflow: visible;
         }
         .word-card-content {
             flex: 1;
@@ -432,7 +434,7 @@
             border-radius: 12px;
             padding: 8px;
             box-shadow: 0 12px 24px rgba(0,0,0,0.35);
-            z-index: 20;
+            z-index: 99999;
             min-width: 120px;
             opacity: 1;
             visibility: visible;
@@ -601,6 +603,23 @@
             max-width: 220px;
         }
 
+        .keyboard-open .feedback-image {
+            max-width: 110px !important;
+            margin: 4px auto !important;
+        }
+        .keyboard-open .feedback-image.xl {
+            max-width: 130px !important;
+            margin: 4px auto !important;
+        }
+        .keyboard-open .feedback-image.large {
+            max-width: 150px !important;
+            margin: 4px auto !important;
+        }
+        .keyboard-open #practiceFeedback {
+            min-height: 70px !important;
+            margin: 5px 0 !important;
+        }
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -679,9 +698,10 @@
             <div class="practice-container">
                 <div class="practice-scroll-content">
                     <div class="practice-word-wrapper" style="display:flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px;">
-                        <div style="display: flex; align-items: center; justify-content: center; width: 100%; position: relative;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-inline: 8px;">
+                            <div style="width: 44px;"></div>
                             <button id="practiceAudioBtn" class="audio-btn" data-i18n-title="listenPronunciation" title="Ouvir pronúncia" style="padding: 10px; font-size: 1.2rem;">🔊</button>
-                            <p id="practiceAttempts" style="color: #f87171; font-weight: bold; margin: 0; position: absolute; right: 12px;"></p>
+                            <p id="practiceAttempts" style="color: #f87171; font-weight: bold; margin: 0; width: 44px; text-align: right;"></p>
                         </div>
                         <h2 id="practiceNative" style="font-size: 1.8rem; color: #f9f9f9; text-align: center;"></h2>
                     </div>
@@ -713,6 +733,18 @@
         </div>
     </div>
 
+    <!-- MODAL DE OPÇÕES DA PALAVRA -->
+    <div id="wordMenuModal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 280px; padding: 20px; position: relative;">
+            <button type="button" onclick="document.getElementById('wordMenuModal').classList.add('hidden')" style="position: absolute; top: 12px; right: 14px; background: none; border: none; color: #94a3b8; font-size: 1.4rem; cursor: pointer; padding: 4px;" aria-label="Fechar">✕</button>
+            <h3 data-i18n="optionsTitle" style="margin-bottom: 16px; font-size: 1.15rem; color: #00ff55;">Opções</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="miniEditBtn" class="btn primary" style="width: 100%; padding: 12px; font-size: 1rem;">✏️ <span data-i18n="edit">Editar</span></button>
+                <button id="miniDelBtn" class="btn danger" style="width: 100%; padding: 12px; font-size: 1rem;">🗑️ <span data-i18n="delete">Excluir</span></button>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const appLanguages = ['pt', 'en', 'es', 'zh', 'hi', 'ar', 'bn', 'ru', 'fr', 'id', 'ur', 'de', 'ja', 'ko'];
@@ -723,7 +755,7 @@
             };
             const interfaceText = {
                 pt: {
-                    appTitle: 'Meus Idiomas', systemLanguage: 'Idioma do app', newNotebook: '+ Novo Caderno',
+                    appTitle: 'Meus Idiomas', systemLanguage: 'Idioma do app', optionsTitle: 'Opções', newNotebook: '+ Novo Caderno',
                     practice: '📒 Praticar', back: '← Voltar', resetProgress: 'Zerar Progresso',
                     newWord: '+ Nova Palavra', detailPractice: 'Praticar', listenPronunciation: 'Ouvir pronúncia',
                     yourTranslation: 'Sua tradução...', quitPractice: 'Sair do Treino', cancel: 'Cancelar',
@@ -743,7 +775,7 @@
                     tryAgain: 'Tente novamente para melhorar!'
                 },
                 en: {
-                    appTitle: 'My Languages', systemLanguage: 'App language', newNotebook: '+ New Notebook',
+                    appTitle: 'My Languages', systemLanguage: 'App language', optionsTitle: 'Options', newNotebook: '+ New Notebook',
                     practice: '📒 Practice', back: '← Back', resetProgress: 'Reset Progress',
                     newWord: '+ New Word', detailPractice: 'Practice', listenPronunciation: 'Listen to pronunciation',
                     yourTranslation: 'Your translation...', quitPractice: 'Quit Practice', cancel: 'Cancel',
@@ -763,7 +795,7 @@
                     tryAgain: 'Try again to improve!'
                 },
                 es: {
-                    appTitle: 'Mis Idiomas', systemLanguage: 'Idioma de la app', newNotebook: '+ Nuevo cuaderno',
+                    appTitle: 'Mis Idiomas', systemLanguage: 'Idioma de la app', optionsTitle: 'Opciones', newNotebook: '+ Nuevo cuaderno',
                     practice: '📒 Practicar', back: '← Volver', resetProgress: 'Reiniciar progreso',
                     newWord: '+ Nueva palabra', detailPractice: 'Practicar', listenPronunciation: 'Escuchar pronunciación',
                     yourTranslation: 'Tu traducción...', quitPractice: 'Salir del entrenamiento', cancel: 'Cancelar',
@@ -1422,36 +1454,42 @@ document.addEventListener('click', () => {
                 renderNotebooks();
             };
 
+            function showModal(title, htmlContent, showFooter = true) {
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalInputs').innerHTML = htmlContent;
+                document.getElementById('modalFooter').style.display = showFooter ? 'flex' : 'none';
+                modal.classList.remove('hidden');
+            }
+
             window.editNotebook = (idx) => {
                 const nb = notebooks[idx];
-                document.getElementById('modalTitle').textContent = t('editNotebook');
-                document.getElementById('modalInputs').innerHTML = `
+                const content = `
                     <input type="text" id="edit_nb_title" value="${nb.title}" placeholder="${t('notebookName')}">
                     <select id="edit_nb_lang">
                         ${languageOptionsHTML}
                     </select>
                 `;
+                showModal(t('editNotebook'), content, true);
                 document.getElementById('edit_nb_lang').value = nb.lang || 'en-US';
 
                 document.getElementById('modalConfirmBtn').onclick = () => {
-                    const t = document.getElementById('edit_nb_title').value.trim();
-                    const l = document.getElementById('edit_nb_lang').value || 'en-US';
-                    if (t) {
-                        notebooks[idx].title = t;
-                        notebooks[idx].lang = l;
+                    const titleVal = document.getElementById('edit_nb_title').value.trim();
+                    const langVal = document.getElementById('edit_nb_lang').value || 'en-US';
+                    if (titleVal) {
+                        notebooks[idx].title = titleVal;
+                        notebooks[idx].lang = langVal;
                         modal.classList.add('hidden');
                         save();
                         renderNotebooks();
                     }
                 };
-                modal.classList.remove('hidden');
             };
 
             window.confirmDeleteNb = (idx) => {
-                document.getElementById('modalTitle').textContent = t('deleteNotebookQuestion');
                 const confirmation = document.createElement('p');
                 confirmation.style.lineHeight = '1.5';
                 confirmation.textContent = t('deleteNotebookText', { name: notebooks[idx].title });
+                showModal(t('deleteNotebookQuestion'), '', true);
                 document.getElementById('modalInputs').replaceChildren(confirmation);
                 document.getElementById('modalConfirmBtn').onclick = () => {
                     notebooks.splice(idx, 1);
@@ -1459,7 +1497,6 @@ document.addEventListener('click', () => {
                     save();
                     renderNotebooks();
                 };
-                modal.classList.remove('hidden');
             };
 
             function renderWords() {
@@ -1486,36 +1523,33 @@ document.addEventListener('click', () => {
                         <div class="word-actions" style="display: flex; align-items: center; gap: 8px;">
                             <button class="word-audio-btn" onpointerdown="window.preloadSpeak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" onclick="event.preventDefault(); event.stopPropagation(); window.speak('${w.native.replace(/'/g, "\\'")}', '${currentNb.lang}')" aria-label="${t('listenWord')}" title="${t('listen')}">🔊</button>
                             <button class="word-menu-toggle" onclick="event.preventDefault(); event.stopPropagation(); window.toggleWordMenu(${wIdx});" aria-label="${t('moreOptions')}">⋯</button>
-                            <div class="word-menu-panel hidden" data-index="${wIdx}" onclick="event.stopPropagation()">
-                                <button class="action-icon-btn" onclick="event.preventDefault(); event.stopPropagation(); window.editWord(${wIdx})" title="${t('edit')}">✏️ ${t('edit')}</button>
-                                <button class="action-icon-btn delete-btn" onclick="event.preventDefault(); event.stopPropagation(); window.delWord(${wIdx})" title="${t('delete')}">🗑️ ${t('delete')}</button>
-                            </div>
                         </div>
                     `;
                     list.appendChild(div);
                 });
             }
 
+            let menuWordIndex = null;
+
             window.toggleWordMenu = (wIdx) => {
-                const panel = document.querySelector(`.word-menu-panel[data-index="${wIdx}"]`);
-                if (!panel) return;
-
-                const isOpen = !panel.classList.contains('hidden');
-                document.querySelectorAll('.word-menu-panel').forEach(item => item.classList.add('hidden'));
-
-                if (!isOpen) {
-                    panel.classList.remove('hidden');
-                }
+                menuWordIndex = wIdx;
+                const menuModal = document.getElementById('wordMenuModal');
+                if (menuModal) menuModal.classList.remove('hidden');
             };
 
-            document.addEventListener('click', (event) => {
-                const clickedInsideToggle = event.target.closest('.word-menu-toggle');
-                const clickedInsidePanel = event.target.closest('.word-menu-panel');
+            document.getElementById('miniEditBtn').onclick = () => {
+                const idx = menuWordIndex;
+                document.getElementById('wordMenuModal').classList.add('hidden');
+                menuWordIndex = null;
+                if (idx !== null) window.editWord(idx);
+            };
 
-                if (!clickedInsideToggle && !clickedInsidePanel) {
-                    document.querySelectorAll('.word-menu-panel').forEach(panel => panel.classList.add('hidden'));
-                }
-            });
+            document.getElementById('miniDelBtn').onclick = () => {
+                const idx = menuWordIndex;
+                document.getElementById('wordMenuModal').classList.add('hidden');
+                menuWordIndex = null;
+                if (idx !== null) window.delWord(idx);
+            };
 
             window.delWord = (wIdx) => {
                 notebooks[currentIndex].words.splice(wIdx, 1);
@@ -1525,70 +1559,67 @@ document.addEventListener('click', () => {
 
             window.editWord = (wIdx) => {
                 const w = notebooks[currentIndex].words[wIdx];
-                document.getElementById('modalTitle').textContent = t('editWord');
-                document.getElementById('modalInputs').innerHTML = `
+                const content = `
                     <input type="text" id="edit_w_nat" value="${w.native}" placeholder="${t('originalWord')}">
                     <input type="text" id="edit_w_trans" value="${w.translation}" placeholder="${t('translation')}">
                 `;
+                showModal(t('editWord'), content, true);
                 document.getElementById('modalConfirmBtn').onclick = () => {
                     const n = document.getElementById('edit_w_nat').value.trim();
-                    const t = document.getElementById('edit_w_trans').value.trim();
-                    if (n && t) {
+                    const transVal = document.getElementById('edit_w_trans').value.trim();
+                    if (n && transVal) {
                         notebooks[currentIndex].words[wIdx].native = n;
-                        notebooks[currentIndex].words[wIdx].translation = t;
+                        notebooks[currentIndex].words[wIdx].translation = transVal;
                         renderWords();
                         modal.classList.add('hidden');
                         save();
                     }
                 };
-                modal.classList.remove('hidden');
             };
 
             document.getElementById('newNotebookBtn').onclick = () => {
-                document.getElementById('modalTitle').textContent = t('newNotebook');
-                document.getElementById('modalInputs').innerHTML = `
+                const content = `
                     <input type="text" id="n_title" placeholder="${t('notebookExample')}">
                     <select id="n_lang">
                         ${languageOptionsHTML}
                     </select>
                 `;
+                showModal(t('newNotebook'), content, true);
                 document.getElementById('modalConfirmBtn').onclick = () => {
-                    const t = document.getElementById('n_title').value.trim();
+                    const titleVal = document.getElementById('n_title').value.trim();
                     const l = document.getElementById('n_lang').value || 'en-US';
-                    if (t) {
-                        notebooks.push({ title: t, lang: l, words: [] });
+                    if (titleVal) {
+                        notebooks.push({ title: titleVal, lang: l, words: [] });
                         renderNotebooks();
                         modal.classList.add('hidden');
                         save();
                     }
                 };
-                modal.classList.remove('hidden');
             };
 
             document.getElementById('addWordBtn').onclick = () => {
-                document.getElementById('modalTitle').textContent = t('newWord');
-                document.getElementById('modalInputs').innerHTML = `
+                const content = `
                     <input type="text" id="w_nat" placeholder="${t('nativeExample')}">
                     <input type="text" id="w_trans" placeholder="${t('translationExample')}">
                 `;
+                showModal(t('newWord'), content, true);
                 document.getElementById('modalConfirmBtn').onclick = () => {
                     const n = document.getElementById('w_nat').value.trim();
-                    const t = document.getElementById('w_trans').value.trim();
-                    if (n && t) {
-                        notebooks[currentIndex].words.push({ native: n, translation: t, mastered: false });
+                    const transVal = document.getElementById('w_trans').value.trim();
+                    if (n && transVal) {
+                        notebooks[currentIndex].words.push({ native: n, translation: transVal, mastered: false });
                         renderWords();
                         modal.classList.add('hidden');
                         save();
                     }
                 };
-                modal.classList.remove('hidden');
             };
 
             document.getElementById('resetProgressBtn').onclick = () => {
-                document.getElementById('modalTitle').textContent = t('resetProgressQuestion');
                 const confirmation = document.createElement('p');
                 confirmation.style.lineHeight = '1.5';
                 confirmation.textContent = t('resetProgressText');
+                showModal(t('resetProgressQuestion'), '', true);
                 document.getElementById('modalInputs').replaceChildren(confirmation);
                 document.getElementById('modalConfirmBtn').onclick = () => {
                     notebooks[currentIndex].words.forEach(w => w.mastered = false);
@@ -1596,7 +1627,6 @@ document.addEventListener('click', () => {
                     save();
                     renderWords();
                 };
-                modal.classList.remove('hidden');
             };
 
             document.getElementById('modalCancelBtn').onclick = () => {
@@ -1616,7 +1646,7 @@ document.addEventListener('click', () => {
                         hearts += '😢 ';
                     }
                 }
-                attemptsContainer.innerHTML = `<span style="font-size: 1.15rem; letter-spacing: 1px;" >${hearts.trim()}</span>`;
+                attemptsContainer.innerHTML = `<span style="font-size: 1.35rem; letter-spacing: 1px;" >${hearts.trim()}</span>`;
             }
 
             document.getElementById('detailPracticeBtn').onclick = () => {
@@ -1808,17 +1838,22 @@ document.addEventListener('click', () => {
                 }
             });
 
-            document.getElementById('practiceAudioBtn').onpointerdown = () => {
+            document.getElementById('practiceAudioBtn').onpointerdown = (e) => {
+                e.preventDefault();
                 const w = activePracticeWords[pIndex];
                 if (!w) return;
                 const correctLang = (practiceSource === 'main') ? (w.lang || 'en-US') : notebooks[currentIndex].lang;
                 preloadSpeak(w.native, correctLang);
             };
 
-            document.getElementById('practiceAudioBtn').onclick = () => {
+            document.getElementById('practiceAudioBtn').onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const w = activePracticeWords[pIndex];
+                if (!w) return;
                 let correctLang = (practiceSource === 'main') ? (w.lang || 'en-US') : notebooks[currentIndex].lang;
                 speak(w.native, correctLang);
+                if (practiceInput) practiceInput.focus();
             };
 
             document.getElementById('practiceQuitBtn').onclick = () => {
@@ -1842,8 +1877,6 @@ document.addEventListener('click', () => {
 
                     if (percent === 100) {
                         feedback.innerHTML = `<img src="imgApp/goodJob.png" alt="Excelente" class="feedback-image xl">`;
-                        const attemptsContainer = document.getElementById('practiceAttempts');
-                        if (attemptsContainer) attemptsContainer.style.display = 'none';
                         playLevelUpSound();
                     } else if (percent >= 50) {
                         feedback.innerHTML = `${t('goodWork')}<div style="font-size: 3.0rem; color: #3b82f6; margin-top: 4px; font-family: monospace;">${t('score')}: ${percent}%<br>${t('practiceMore')}</div>`;
