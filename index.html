@@ -559,9 +559,9 @@
 
         /* Reduzido o tamanho da fonte e altura mínima da área de feedback */
         #practiceFeedback {
-            font-size: 1.8rem;
-            margin: 10px 0;
-            min-height: 2.8rem;
+            font-size: 3.5rem;
+            margin: 20px 0 10px 0;
+            min-height: 130px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -585,20 +585,20 @@
         }
 
         .feedback-image {
-            max-width: 100px;
+            max-width: 190px;
             width: 100%;
             height: auto;
             display: block;
-            margin: 0 auto 1px;
-            border-radius: 10px;
+            margin: 10px auto 0 auto;
+            border-radius: 14px;
         }
 
         .feedback-image.large {
-            max-width: 200px;
+            max-width: 250px;
         }
 
         .feedback-image.xl {
-            max-width: 150px;
+            max-width: 220px;
         }
 
         .empty-state {
@@ -678,8 +678,11 @@
         <section id="practiceSection" class="hidden">
             <div class="practice-container">
                 <div class="practice-scroll-content">
-                    <div class="practice-word-wrapper" style="display:flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
-                        <button id="practiceAudioBtn" class="audio-btn" data-i18n-title="listenPronunciation" title="Ouvir pronúncia">🔊</button>
+                    <div class="practice-word-wrapper" style="display:flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; justify-content: center; width: 100%; position: relative;">
+                            <button id="practiceAudioBtn" class="audio-btn" data-i18n-title="listenPronunciation" title="Ouvir pronúncia" style="padding: 10px; font-size: 1.2rem;">🔊</button>
+                            <p id="practiceAttempts" style="color: #f87171; font-weight: bold; margin: 0; position: absolute; right: 12px;"></p>
+                        </div>
                         <h2 id="practiceNative" style="font-size: 1.8rem; color: #f9f9f9; text-align: center;"></h2>
                     </div>
 
@@ -691,8 +694,7 @@
                     <p id="practiceFeedback"></p>
                 </div>
                 <div class="practice-footer">
-                    <p id="practiceAttempts" style="color: #f87171; font-weight: bold;"></p>
-                    <button id="practiceQuitBtn" class="btn secondary" style="margin-top: 20px; width: 50%;" data-i18n="quitPractice">Sair do Treino</button>
+                    <button id="practiceQuitBtn" class="btn secondary" style="margin-top: 10px; width: 90%;" data-i18n="quitPractice">Sair do Treino</button>
                 </div>
             </div>
         </section>
@@ -1614,8 +1616,7 @@ document.addEventListener('click', () => {
                         hearts += '😢 ';
                     }
                 }
-                attemptsContainer.innerHTML = `<span style="font-size: 2rem; letter-spacing: 2px;" >${hearts.trim()}</span>`;
-
+                attemptsContainer.innerHTML = `<span style="font-size: 1.15rem; letter-spacing: 1px;" >${hearts.trim()}</span>`;
             }
 
             document.getElementById('detailPracticeBtn').onclick = () => {
